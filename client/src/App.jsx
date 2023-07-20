@@ -1,10 +1,10 @@
 import './App.css'
 import {Routes, Route} from "react-router-dom"
-import AdminNavbar from './assets/components/navbars/AdminNavbar'
+import AdminNavbar from './components/navbars/AdminNavbar'
 import UserPage from './pages/UserPage'
 import ColourPage from './pages/ColourPage'
 import ItemPage from './pages/ItemPage'
-import StoreNavbar from './assets/components/navbars/StoreNavbar'
+import StoreNavbar from './components/navbars/StoreNavbar'
 
 function App() {
 
