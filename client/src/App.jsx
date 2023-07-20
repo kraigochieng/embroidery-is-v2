@@ -15,6 +15,7 @@ function App() {
           <Route path="store" element={<StoreNavbar />}>
             <Route path="items" element={<ItemPage />}/>
             <Route path="colours" element={<ColourPage />}/>
+            <Route path="positions" />
           </Route>
           <Route path="users" element={<UserPage />} />
         </Route>
