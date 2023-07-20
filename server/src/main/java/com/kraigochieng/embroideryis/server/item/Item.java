@@ -1,9 +1,14 @@
 package com.kraigochieng.embroideryis.server.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.kraigochieng.embroideryis.server.position.Position;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +22,11 @@ public class Item {
     @SequenceGenerator(name = "item_sequence", sequenceName = "item_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_sequence")
     private Long id;
+
     @Column(name = "name", unique = true)
     private String name;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    private List<Position> positions;
 }

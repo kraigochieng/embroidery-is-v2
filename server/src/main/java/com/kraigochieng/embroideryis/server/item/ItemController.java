@@ -11,26 +11,25 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    @Autowired
+    @Autowired()
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 
     @GetMapping
-    public List<Item> getColours() {
+    public List<Item> getItems() {
         return itemService.getItems();
     }
 
     @PostMapping
-    public Item addColour(@RequestBody Item item) {
+    public Item addItem(@RequestBody Item item) {
         return itemService.addItem(item);
     }
 
     @PutMapping("{id}")
-    public Item editColour(@RequestBody Item editedItem, @PathVariable Long id) {
+    public Item editItem(@RequestBody Item editedItem, @PathVariable Long id) {
         return itemService.editItem(editedItem, id);
     }
-
     @DeleteMapping("{id}")
     public void removeColour(@PathVariable Long id) {
         itemService.removeItem(id);
