@@ -5,6 +5,7 @@ import UserPage from './pages/UserPage'
 import ColourPage from './pages/ColourPage'
 import ItemPage from './pages/ItemPage'
 import StoreNavbar from './components/navbars/StoreNavbar'
+import PositionPage from './pages/PositionPage'
 
 function App() {
 
@@ -13,9 +14,9 @@ function App() {
       <Routes>
         <Route path="/admin" element={<AdminNavbar />}>
           <Route path="store" element={<StoreNavbar />}>
-            <Route path="items" element={<ItemPage />}/>
-            <Route path="colours" element={<ColourPage />}/>
-            <Route path="positions" />
+            <Route path="items" element={<ItemPage />} />
+            <Route path="colours" element={<ColourPage />} />
+            <Route path="positions" element={<PositionPage />} />
           </Route>
           <Route path="users" element={<UserPage />} />
         </Route>
