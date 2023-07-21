@@ -7,6 +7,7 @@ export default function StoreNavbar() {
         <ul>
             <li><Link to="items">Items</Link></li>
             <li><Link to="colours">Colours</Link></li>
+            <li><Link to="positions">Positions</Link></li>
         </ul>
         <Outlet />
     </div>
