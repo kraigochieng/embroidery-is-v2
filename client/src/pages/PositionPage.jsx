@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { server } from '../axiosInstances'
+import PositionForm from '../components/forms/PositionForm'
+import PositionTable from '../components/tables/PositionTable'
 
 export default function PositionPage() {
 
@@ -109,6 +111,7 @@ export default function PositionPage() {
 
         closeDialog()
     }
+
     function handleChange(event) {
         const {name, value} = event.target
         setPositionFormData(prev => ({...prev, [name]: value}))
@@ -116,49 +119,21 @@ export default function PositionPage() {
 
     return (
     <div>
-    <button onClick={handleAdd}>Add Position</button>
-    <dialog ref={dialogRef}>
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="item-select">Item</label>
-            <select id="item-select" name="itemId" value={positionFormData.itemId} onChange={handleChange}>
-                <option value="" disabled>Choose</option>
-                {items.map(item => (
-                    <option key={item.id} value={item.id}>{item.name}</option>
-                ))}
-            </select>
-            <input type="text" placeholder='Position' name="name" value={positionFormData.name} onChange={handleChange}/>
-            <button>{method === "POST" ? "Add" : "Edit"} Position</button>
-        </form>
-    </dialog>
-    <table id="position-table">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Position</th>
-            </tr>
-        </thead>
-        <tbody>
-            {
-                items.map(item => (
-                    item.positions.length > 0 ? 
-                    // Put positions if they exist
-                    item.positions.map(position => (
-                        <tr key={position.id}>
-                            {/*If it is first position in array, include the item name*/}
-                            { item.positions.indexOf(position) === 0 && <td rowSpan={item.positions.length}>{item.name} </td>}
-                            <td>{position.name}</td>
-                            <td><button onClick={() => handleEdit(item, position)}>Edit</button></td>
-                            <td><button onClick={() => handleRemove(item.id, position.id)}>Remove</button></td>
-                        </tr> 
-                    )) :
-                    <tr key={item.id}>
-                        <td>{item.name}</td>
-                        <td>No Positions Found</td>
-                    </tr>
-                ))
-            }
-        </tbody>
-    </table>
+        <button onClick={handleAdd}>Add Position</button>
+        <dialog ref={dialogRef}>
+            <PositionForm
+                positionFormData={positionFormData}
+                items={items}
+                method={method}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+            />
+        </dialog>
+        <PositionTable
+            items={items}
+            handleEdit={handleEdit}
+            handleRemove={handleRemove}
+        />
     </div>
   )
 }

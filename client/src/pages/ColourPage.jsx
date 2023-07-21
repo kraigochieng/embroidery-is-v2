@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { server } from '../axiosInstances'
+import ColourForm from '../components/forms/ColourForm'
+import ColourTable from '../components/tables/ColourTable'
 export default function ColourPage() {
     const [colourFormData, setColourFormData] = useState({
         id: "",
@@ -77,33 +79,18 @@ export default function ColourPage() {
     <div>
         <button onClick={handleAdd}>Add Colour</button>
         <dialog ref={dialogRef}>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={colourFormData.name}
-                    onChange={handleChange}
-                />
-                <button>{method === "POST" ? "Add" : "Edit"} Colour</button>
-            </form>
+            <ColourForm
+                colourFormData={colourFormData}
+                method={method}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+            />
         </dialog>
-        <table>
-                <thead>
-                    <tr>
-                        <th>Colour Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {colours.map(colour => (
-                        <tr key={colour.id}>
-                            <td>{colour.name}</td>
-                            <td><button onClick={() => handleEdit(colour)}>Edit</button></td>
-                            <td><button onClick={() => handleRemove(colour.id)}>Remove</button></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <ColourTable 
+            colours={colours}
+            handleEdit={handleEdit}
+            handleRemove={handleRemove}
+        />
         
     </div>
   )

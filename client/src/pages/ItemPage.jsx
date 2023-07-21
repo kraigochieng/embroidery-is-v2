@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { server } from '../axiosInstances'
+import ItemTable from '../components/tables/ItemTable'
+import ItemForm from '../components/forms/ItemForm'
 export default function ItemPage() {
     const [itemFormData, setItemFormData] = useState({
         id: "",
@@ -77,34 +79,18 @@ export default function ItemPage() {
     <div>
         <button onClick={handleAdd}>Add Item</button>
         <dialog ref={dialogRef}>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={itemFormData.name}
-                    onChange={handleChange}
-                />
-                <button>{method === "POST" ? "Add" : "Edit"} Item</button>
-            </form>
+            <ItemForm
+                itemFormData={itemFormData}
+                method={method}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+            />
         </dialog>
-        <table>
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {items.map(item => (
-                        <tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td><button onClick={() => handleEdit(item)}>Edit</button></td>
-                            <td><button onClick={() => handleRemove(item.id)}>Remove</button></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        
+        <ItemTable
+            items={items}
+            handleEdit={handleEdit}
+            handleRemove={handleRemove}
+        />        
     </div>
   )
 }
