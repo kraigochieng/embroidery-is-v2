@@ -21,7 +21,7 @@ public class Position {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id", foreignKey = @ForeignKey(name = "position_item_fk"))
     private Item item;
 
     @Column(name = "name")
