@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function UserPage() {
   return (
-    <div>UserPage</div>
+    <div className="page">UserPage</div>
   )
 }

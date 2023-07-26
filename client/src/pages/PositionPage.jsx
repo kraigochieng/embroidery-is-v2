@@ -118,7 +118,7 @@ export default function PositionPage() {
     }
 
     return (
-    <div>
+    <div className="page">
         <button onClick={handleAdd}>Add Position</button>
         <dialog ref={dialogRef}>
             <PositionForm

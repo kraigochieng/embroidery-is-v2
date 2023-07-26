@@ -76,7 +76,7 @@ export default function ItemPage() {
         closeDialog()
     }
   return (
-    <div>
+    <div className="page">
         <button onClick={handleAdd}>Add Item</button>
         <dialog ref={dialogRef}>
             <ItemForm

@@ -76,7 +76,7 @@ export default function ColourPage() {
         closeDialog()
     }
   return (
-    <div>
+    <div className="page">
         <button onClick={handleAdd}>Add Colour</button>
         <dialog ref={dialogRef}>
             <ColourForm
