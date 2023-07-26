@@ -1,6 +1,6 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 table {
     border-collapse: collapse;
@@ -8,4 +8,12 @@ table {
 
 table, th, td {
   border: solid 1px black;  
+}
+
+/* .page {
+  border-top: solid 1px black;
+} */
+
+.navbar {
+  border-bottom: solid 1px black;
 }
