@@ -1,9 +1,10 @@
-package com.kraigochieng.embroideryis.server.item;
+package com.kraigochieng.embroideryis.server.services;
 
 import com.kraigochieng.embroideryis.server.models.Item;
 import com.kraigochieng.embroideryis.server.repositories.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,25 +17,25 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public List<Item> getItems() {
-        return itemRepository.findAll();
+    public ResponseEntity<List<Item>> getItems() {
+        return ResponseEntity.ok(itemRepository.findAll());
     }
 
-    public Item addItem(Item item) {
-        return  itemRepository.save(item);
+    public ResponseEntity<Item> addItem(Item item) {
+        return  ResponseEntity.ok(itemRepository.save(item));
     }
     @Transactional
-    public Item editItem(Item editedItem, Long id) {
+    public ResponseEntity<Item> editItem(Item editedItem, Long id) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException("Item not found during edit"));
         if(item.getName() != editedItem.getName() && editedItem.getName().length() > 0) {
             item.setName(editedItem.getName());
         }
 
-        return item;
+        return ResponseEntity.ok(item);
     }
 
-
-    public void removeItem(Long id) {
+    public ResponseEntity<String> removeItem(Long id) {
         itemRepository.deleteById(id);
+        return ResponseEntity.ok("Item with ID: " + id + " deleted.");
     }
 }
