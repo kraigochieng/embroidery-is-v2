@@ -1,6 +1,9 @@
-package com.kraigochieng.embroideryis.server.position;
+package com.kraigochieng.embroideryis.server.controllers;
 
+import com.kraigochieng.embroideryis.server.models.Position;
+import com.kraigochieng.embroideryis.server.services.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,21 +19,21 @@ public class PositionController {
     }
 
     @GetMapping
-    public List<Position> getPositions() {
+    public ResponseEntity<List<Position>> getPositions() {
         return positionService.getPositions();
     }
     @PostMapping("{itemId}")
-    public Position addPosition(@RequestBody Position position, @PathVariable Long itemId) {
+    public ResponseEntity<Position> addPosition(@RequestBody Position position, @PathVariable Long itemId) {
         return positionService.addPosition(position, itemId);
     }
 
     @DeleteMapping("{positionId}")
-    public void removePosition(@PathVariable Long positionId) {
-        positionService.removePosition(positionId);
+    public ResponseEntity<String> removePosition(@PathVariable Long positionId) {
+        return positionService.removePosition(positionId);
     }
 
     @PutMapping("{positionId}")
-    public Position editPosition(@RequestBody Position editedPosition,@PathVariable Long positionId) {
+    public ResponseEntity<Position> editPosition(@RequestBody Position editedPosition,@PathVariable Long positionId) {
         return positionService.editPosition(editedPosition, positionId);
     }
 

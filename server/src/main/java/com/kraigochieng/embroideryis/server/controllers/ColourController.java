@@ -1,12 +1,16 @@
-package com.kraigochieng.embroideryis.server.colour;
+package com.kraigochieng.embroideryis.server.controllers;
 
+import com.kraigochieng.embroideryis.server.models.Colour;
+import com.kraigochieng.embroideryis.server.services.ColourService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/admin/colours")
+@RequestMapping(path = "/api/admin/colours")
 @CrossOrigin
 public class ColourController {
     private final ColourService colourService;
@@ -17,22 +21,22 @@ public class ColourController {
     }
 
     @GetMapping
-    public List<Colour> getColours() {
+    public ResponseEntity<List<Colour>> getColours() {
         return colourService.getColours();
     }
 
     @PostMapping
-    public Colour addColour(@RequestBody Colour colour) {
+    public ResponseEntity<Colour> addColour(@RequestBody Colour colour) {
         return colourService.addColour(colour);
     }
 
     @PutMapping("{id}")
-    public Colour editColour(@RequestBody Colour editedColour, @PathVariable Long id) {
+    public ResponseEntity<Colour> editColour(@RequestBody Colour editedColour, @PathVariable Long id) {
         return colourService.editColour(editedColour, id);
     }
 
     @DeleteMapping("{id}")
-    public void removeColour(@PathVariable Long id) {
-        colourService.removeColour(id);
+    public ResponseEntity<String> removeColour(@PathVariable Long id) {
+        return colourService.removeColour(id);
     }
 }
