@@ -1,8 +1,6 @@
-package com.kraigochieng.embroideryis.server.item;
+package com.kraigochieng.embroideryis.server.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.kraigochieng.embroideryis.server.position.Position;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
