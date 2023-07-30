@@ -1,4 +1,4 @@
-package com.kraigochieng.embroideryis.server.position;
+package com.kraigochieng.embroideryis.server.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.kraigochieng.embroideryis.server.models.Item;
 

@@ -1,4 +1,4 @@
-package com.kraigochieng.embroideryis.server.colour;
+package com.kraigochieng.embroideryis.server.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
