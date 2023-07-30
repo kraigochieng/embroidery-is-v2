@@ -1,7 +1,6 @@
 package com.kraigochieng.embroideryis.server.position;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kraigochieng.embroideryis.server.item.Item;
+import com.kraigochieng.embroideryis.server.models.Item;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

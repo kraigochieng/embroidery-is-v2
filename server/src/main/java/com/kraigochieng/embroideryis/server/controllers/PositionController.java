@@ -1,6 +1,5 @@
 package com.kraigochieng.embroideryis.server.position;
 
-import com.kraigochieng.embroideryis.server.item.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

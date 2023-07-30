@@ -1,5 +1,7 @@
 package com.kraigochieng.embroideryis.server.item;
 
+import com.kraigochieng.embroideryis.server.models.Item;
+import com.kraigochieng.embroideryis.server.repositories.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
