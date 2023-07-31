@@ -7,6 +7,9 @@ import com.kraigochieng.embroideryis.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +24,11 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     // Login
     private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
 
     public String login(LoginRequest loginRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, loginRequest.getPassword(),userDetails.getAuthorities());
         authenticationManager.authenticate(authenticationToken);
         String token = jwtService.generateToken(authenticationToken);
         return token;
