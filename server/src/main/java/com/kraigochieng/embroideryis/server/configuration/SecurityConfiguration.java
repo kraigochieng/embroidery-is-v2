@@ -30,10 +30,17 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers("/api/authentication/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(jwt -> jwt.decoder(jwtDecoder())))
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+                        .jwt(jwt -> jwt
+                                .decoder(jwtDecoder())
+                        )
+                )
                 .build();
     }
 
