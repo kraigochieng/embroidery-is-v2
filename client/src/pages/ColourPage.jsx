@@ -47,11 +47,7 @@ export default function ColourPage() {
     function handleRemove(id) {
         server.delete(`admin/colours/${id}`)
             .then(response => {
-                setColours(prevColours => {
-                    return prevColours.filter(colour => {
-                        return colour.id !== id
-                    })
-                })
+                setColours(prevColours => prevColours.filter(colour => colour.id !== id))
             })
     }
 
