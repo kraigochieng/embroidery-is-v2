@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage'
 import HomeNavbar from './components/navbars/HomeNavbar'
 import AdminPage from './pages/AdminPage'
 import StorePage from './pages/StorePage'
+import AuthPage from './pages/AuthPage'
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
           </Route>
           <Route path="users" element={<UserPage />} />
         </Route>
+        <Route path="/auth" element={<AuthPage />} />
       </Routes>
     </>
   )
