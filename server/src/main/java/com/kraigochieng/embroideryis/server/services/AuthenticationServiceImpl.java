@@ -7,7 +7,6 @@ import com.kraigochieng.embroideryis.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,11 +14,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl {
     // Saving user, querying for user
     private final UserRepository userRepository;
     // To Generate Tokens
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtServiceImpl;
     // To encode password input by user
     private final PasswordEncoder passwordEncoder;
     // Login
@@ -30,7 +29,7 @@ public class AuthenticationService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, loginRequest.getPassword(),userDetails.getAuthorities());
         authenticationManager.authenticate(authenticationToken);
-        String token = jwtService.generateToken(authenticationToken);
+        String token = jwtServiceImpl.generateToken(authenticationToken);
         return token;
     }
 
@@ -48,7 +47,7 @@ public class AuthenticationService {
         userRepository.save(user);
         // Generate token
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(registerRequest.getUsername(), registerRequest.getPassword());
-        String token = jwtService.generateToken(authenticationToken);
+        String token = jwtServiceImpl.generateToken(authenticationToken);
         // Return token
         return token;
     }

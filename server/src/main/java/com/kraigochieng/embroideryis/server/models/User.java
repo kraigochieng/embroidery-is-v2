@@ -1,6 +1,7 @@
 package com.kraigochieng.embroideryis.server.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.kraigochieng.embroideryis.server.models.Role;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Builder
 @Table(name = "user")
 @Entity(name = "User")
+@JsonIgnoreProperties({"password"})
 public class User implements UserDetails {
     @Id
     @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)

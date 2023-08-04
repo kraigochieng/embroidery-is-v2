@@ -2,28 +2,31 @@ package com.kraigochieng.embroideryis.server.controllers;
 
 import com.kraigochieng.embroideryis.server.authentication.LoginRequest;
 import com.kraigochieng.embroideryis.server.authentication.RegisterRequest;
-import com.kraigochieng.embroideryis.server.models.User;
-import com.kraigochieng.embroideryis.server.services.AuthenticationService;
+import com.kraigochieng.embroideryis.server.services.AuthenticationServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/authentication")
+@RequestMapping(path = "/api/authentication")
 @CrossOrigin
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private  final AuthenticationService authenticationService;
+    private  final AuthenticationServiceImpl authenticationServiceImpl;
 
-    @PostMapping("login")
+    @PostMapping(path = "login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
 
-        return ResponseEntity.ok(authenticationService.login(loginRequest));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authenticationServiceImpl.login(loginRequest));
     }
-    @PostMapping("register")
+    @PostMapping(path = "register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
 //        System.out.println(user);
-        return ResponseEntity.ok(authenticationService.register(registerRequest));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(authenticationServiceImpl.register(registerRequest));
     }
 }
