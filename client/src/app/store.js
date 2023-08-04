@@ -1,4 +1,4 @@
-import {configureStore} from "@reduxjs/toolkit"
+import { configureStore } from "@reduxjs/toolkit"
 
 import { itemsReducer } from "../features/items/itemsSlice"
 import { coloursReducer } from "../features/colours/coloursSlice"
