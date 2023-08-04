@@ -1,20 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { server } from '../axiosInstances'
+import React, {  useRef, useState } from 'react'
 import ItemTable from '../components/tables/ItemTable'
 import ItemForm from '../components/forms/ItemForm'
+import { useDispatch } from 'react-redux'
+import { putItem, deleteItem, postItem } from '../features/items/itemsSlice'
+
 export default function ItemPage() {
+    const dispatch = useDispatch()
+
     const [itemFormData, setItemFormData] = useState({
         id: "",
         name: "",
     })
-
-    const [items, setItems] = useState([])
-
-    useEffect(() => {
-        server.get("admin/items")
-            .then(response => setItems([...response.data]))
-            .catch(error => console.error(error))
-    }, [])
 
     const dialogRef = useRef(null)
 
@@ -33,51 +29,35 @@ export default function ItemPage() {
         setItemFormData(prevItemFormData => ({...prevItemFormData, [name]: value}))
     }
 
-    function handleAdd() {
+    function handlePostItem() {
         setMethod("POST")
         openDialog()
     }
-
-    function handleEdit(item) {
+    
+    function handlePutItem(item) {
         setMethod("PUT")
         openDialog()
         setItemFormData({...item})
     }
-    
-    function handleRemove(id) {
-        server.delete(`admin/items/${id}`)
-            .then(response => {
-                setItems(prevItems => {
-                    return prevItems.filter(item => {
-                        return item.id !== id
-                    })
-                })
-            })
+
+    function handleDeleteItem(id) {
+        dispatch(deleteItem(id))
     }
 
     function handleSubmit(event) {
         event.preventDefault()
         if(method === "POST") {
-            server.post("admin/items", itemFormData)
-                .then(response => {
-                    setItems(prevItems => [...prevItems, response.data])
-                })
-                .catch(error => console.error(error))
+            dispatch(postItem(itemFormData))
         } else if(method === "PUT") {
-            server.put(`admin/items/${itemFormData.id}`, itemFormData)
-                .then(response => setItems(prevItems => {
-                    return prevItems.map(item => {
-                        // Update the name
-                        return item.id === itemFormData.id ? {...item, name: itemFormData.name } : item 
-                    })
-                }))
+            dispatch(putItem(itemFormData))
         }
         setItemFormData({id: "", name: "" })
         closeDialog()
     }
-  return (
+
+    return (
     <div className="page">
-        <button onClick={handleAdd}>Add Item</button>
+        <button onClick={handlePostItem}>Add Item</button>
         <dialog ref={dialogRef}>
             <ItemForm
                 itemFormData={itemFormData}
@@ -87,10 +67,9 @@ export default function ItemPage() {
             />
         </dialog>
         <ItemTable
-            items={items}
-            handleEdit={handleEdit}
-            handleRemove={handleRemove}
+            handlePutItem={handlePutItem}
+            handleDeleteItem={handleDeleteItem}
         />        
     </div>
-  )
+    )
 }

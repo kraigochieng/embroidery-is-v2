@@ -2,19 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { server } from '../axiosInstances'
 import ColourForm from '../components/forms/ColourForm'
 import ColourTable from '../components/tables/ColourTable'
+import { deleteColour, postColour, putColour } from '../features/colours/coloursSlice'
+import { useDispatch } from 'react-redux'
 export default function ColourPage() {
+    const dispatch = useDispatch()
     const [colourFormData, setColourFormData] = useState({
         id: "",
         name: "",
     })
-
-    const [colours, setColours] = useState([])
-
-    useEffect(() => {
-        server.get("admin/colours")
-            .then(response => setColours([...response.data]))
-            .catch(error => console.error(error))
-    }, [])
 
     const dialogRef = useRef(null)
 
@@ -33,47 +28,34 @@ export default function ColourPage() {
         setColourFormData(prevColourFormData => ({...prevColourFormData, [name]: value}))
     }
 
-    function handleAdd() {
+    function handlePostColour() {
         setMethod("POST")
         openDialog()
     }
 
-    function handleEdit(colour) {
+    function handlePutColour(colour) {
         setMethod("PUT")
         openDialog()
         setColourFormData({...colour})
     }
     
-    function handleRemove(id) {
-        server.delete(`admin/colours/${id}`)
-            .then(response => {
-                setColours(prevColours => prevColours.filter(colour => colour.id !== id))
-            })
+    function handleDeleteColour(id) {
+        dispatch(deleteColour(id))
     }
 
     function handleSubmit(event) {
         event.preventDefault()
         if(method === "POST") {
-            server.post("admin/colours", colourFormData)
-                .then(response => {
-                    setColours(prevColours => [...prevColours, response.data])
-                })
-                .catch(error => console.error(error))
+            dispatch(postColour(colourFormData))
         } else if(method === "PUT") {
-            server.put(`admin/colours/${colourFormData.id}`, colourFormData)
-                .then(response => setColours(prevColours => {
-                    return prevColours.map(colour => {
-                        // Update the name
-                        return colour.id === colourFormData.id ? {...colour, name: colourFormData.name } : colour 
-                    })
-                }))
+            dispatch(putColour(colourFormData))
         }
         setColourFormData({id: "", name: "" })
         closeDialog()
     }
   return (
     <div className="page">
-        <button onClick={handleAdd}>Add Colour</button>
+        <button onClick={handlePostColour}>Add Colour</button>
         <dialog ref={dialogRef}>
             <ColourForm
                 colourFormData={colourFormData}
@@ -83,9 +65,8 @@ export default function ColourPage() {
             />
         </dialog>
         <ColourTable 
-            colours={colours}
-            handleEdit={handleEdit}
-            handleRemove={handleRemove}
+            handlePutColour={handlePutColour}
+            handleDeleteColour={handleDeleteColour}
         />
         
     </div>

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 export default function AuthPage() {
     const navigate = useNavigate()
     const [loginFormData, setLoginFormData] = useState({
-        username: "kraig16",
+        username: "kraig18",
         password: "password"
     })
 
@@ -23,7 +23,7 @@ export default function AuthPage() {
         auth.post("login", loginFormData)
             .then(response => {
                 // set JWT token
-                localStorage.setItem("jwt", response.data)
+                sessionStorage.setItem("jwt", response.data)
                 //
                 navigate("/")
             })
