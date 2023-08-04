@@ -1,0 +1,110 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { server } from "../../axiosInstances";
+
+const initialState = {
+    loading: false,
+    data: [],
+    error: ""
+}
+
+export const getUsers = createAsyncThunk("users/getUsers", async () => {
+    let response = await server.get("admin/users/get")
+    return response.data
+})
+
+export const putUser = createAsyncThunk("users/putUser", async (userForm) => {
+    let response = await server.put(`admin/users/put/${userForm.id}`, userForm)
+    return response.data
+})
+
+export const postUser = createAsyncThunk("users/postUser", async (userForm) => {
+    let response = await server.post("admin/users/post", userForm)
+    return response.data
+})
+
+export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
+    await server.delete(`admin/users/delete/${id}`)
+    return id
+})
+const usersSlice = createSlice({
+    name: "users",
+    initialState,
+    extraReducers: (builder) => {
+        builder
+            // Get Users
+            .addCase(getUsers.pending, (state) => {
+                state.loading = true
+            })
+
+            .addCase(getUsers.fulfilled, (state, action) => {
+                state.loading = false
+                state.data = action.payload
+                state.error = ""
+            })
+
+            .addCase(getUsers.rejected, (state, action) => {
+                state.loading = false
+                state.data = []
+                state.error = action.payload
+            })
+
+            // Put Users
+            .addCase(putUser.pending, (state) => {
+                state.loading = true
+            })
+
+            .addCase(putUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.data = state.data.map(user => {
+                    return user.id == action.payload.id ?
+                    action.payload :
+                    user
+                })
+                state.error = ""
+            })
+
+            .addCase(putUser.rejected, (state, action) => {
+                state.loading = false
+                state.data = []
+                state.error = action.payload
+            })
+
+            // Post User
+            .addCase(postUser.pending, (state) => {
+                state.loading = true
+            })
+
+            .addCase(postUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.data = [...state.data, action.payload]
+                state.error = ""
+            })
+
+            .addCase(postUser.rejected, (state, action) => {
+                state.loading = false
+                state.data = []
+                state.error = action.payload
+            })
+
+            // Post User
+            .addCase(deleteUser.pending, (state) => {
+                state.loading = true
+            })
+
+            .addCase(deleteUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.data = state.data.filter(user => user.id != action.payload)
+                state.error = ""
+            })
+
+            .addCase(deleteUser.rejected, (state, action) => {
+                state.loading = false
+                state.data = []
+                state.error = action.payload
+            })
+
+            
+    }
+})
+
+export const usersReducer = usersSlice.reducer
