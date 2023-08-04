@@ -1,10 +1,7 @@
 package com.kraigochieng.embroideryis.server.services;
 
 import com.kraigochieng.embroideryis.server.models.Colour;
-import com.kraigochieng.embroideryis.server.repositories.ColourRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

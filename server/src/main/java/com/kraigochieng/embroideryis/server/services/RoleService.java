@@ -1,7 +1,6 @@
 package com.kraigochieng.embroideryis.server.services;
 
 import com.kraigochieng.embroideryis.server.models.Role;
-import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 

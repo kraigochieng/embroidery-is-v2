@@ -1,7 +1,6 @@
 package com.kraigochieng.embroideryis.server.services;
 
 import com.kraigochieng.embroideryis.server.models.User;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;

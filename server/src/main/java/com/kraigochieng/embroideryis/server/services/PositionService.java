@@ -1,10 +1,7 @@
 package com.kraigochieng.embroideryis.server.services;
 
-import com.kraigochieng.embroideryis.server.models.Item;
 import com.kraigochieng.embroideryis.server.models.Position;
 import jakarta.transaction.Transactional;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
