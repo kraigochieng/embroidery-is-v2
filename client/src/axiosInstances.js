@@ -6,7 +6,7 @@ export const server = axios.create({
 
 server.interceptors.request.use(
     (config) => {
-        config.headers['Authorization'] = `Bearer ${localStorage.getItem("jwt")}`
+        config.headers['Authorization'] = `Bearer ${sessionStorage.getItem("jwt")}`
         return config
     },
     (error) => {
