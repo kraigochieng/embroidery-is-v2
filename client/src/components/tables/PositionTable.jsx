@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getPositions } from '../../features/positions/positionsSlice'
 
 export default function PositionTable(props) {
+    const dispatch = useDispatch()
+    const items = useSelector(state => state.positions)
+    const { handleDeletePosition, handlePutPosition } = props
     
+    useEffect(() => {
+        dispatch(getPositions())
+    }, [])
+
     function PositionRow(props) {
         const { item } = props
 
@@ -11,10 +20,10 @@ export default function PositionTable(props) {
             item.positions.map(position => (
                 <tr key={position.id}>
                     {/*If it is first position in array, include the item name*/}
-                    { item.positions.indexOf(position) === 0 && <td rowSpan={item.positions.length}>{item.name} </td>}
+                    { item.positions.indexOf(position) === 0 && <td rowSpan={item.positions.length}>{item.name}</td>}
                     <td>{position.name}</td>
-                    <td><button onClick={() => handleEdit(item, position)}>Edit</button></td>
-                    <td><button onClick={() => handleRemove(item.id, position.id)}>Remove</button></td>
+                    <td><button onClick={() => handlePutPosition(item, position)}>Edit</button></td>
+                    <td><button onClick={() => handleDeletePosition(item.id, position.id)}>Remove</button></td>
                 </tr> 
             )) :
             <tr key={item.id}>
@@ -23,21 +32,27 @@ export default function PositionTable(props) {
             </tr>
         )
     }
-    const {items, handleEdit, handleRemove} = props
 
     return (
-        <table id="position-table">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Position</th>
-            </tr>
-        </thead>
-        <tbody>
-            {
-                items.map(item => <PositionRow key={item.id} item={item}/>)
-            }
-        </tbody>
-        </table>
+        <>
+        {
+            !items.loading ?
+            <table id="position-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Position</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    items.data.map(item => <PositionRow key={item.id} item={item}/>)
+                }
+            </tbody>
+            </table> :
+            <p>Loading...</p>
+        }
+        </>
+
     )
 }
