@@ -3,16 +3,29 @@ import { server } from '../axiosInstances'
 import { deleteUser, getUsers, postUser } from '../features/users/usersSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRoles } from '../features/roles/rolesSlice'
+import { stringify } from 'postcss'
 export default function UserPage() {
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getUsers())
-    dispatch(getRoles())
-  }, [])
-
   const users = useSelector(state => state.users)
   const roles = useSelector(state => state.roles)
+
+  useEffect(() => {
+    dispatch(getUsers())
+    dispatch(getRoles())    
+  }, [])
+
+  // // This use effect ensures that roles.data has been populated
+  // useEffect(() => {
+  //   console.log(roles.data)
+  //   roles.data.map(role => {
+  //     setUserFormData(prevUserFormData => ({
+  //       ...prevUserFormData,
+  //       [role.name]: false,
+  //     }))
+  //   })
+  // }, [roles.data])
+
 
   const roleDialog = useRef(null)
   const userDialog = useRef(null)
@@ -21,11 +34,10 @@ export default function UserPage() {
 
   const [userFormData, setUserFormData] = useState({
     id: "",
-    firstName: "Kraig",
-    lastName: "Ochieng",
-    username: "kraig",
-    password: "password",
-    roles: [],
+    firstName: "",
+    lastName: "",
+    username: "",
+    password: "",
     enabled: false,
     accountNonExpired: false,
     accountNonLocked: false,
@@ -35,35 +47,94 @@ export default function UserPage() {
   })
 
   function handleUserFormChange(event) {
-    const {name, value} = event.target
+    const {name, value, type, checked} = event.target
     setUserFormData(prevUser => ({
       ...prevUser,
-      [name]: value
+      [name]: type === "checkbox" ? checked : value
     }))
   }
 
-  function handleRoleChange(event) {
-    const {checked, value} = event.target
-    setUserFormData(prevUser => ({
-      ...prevUser,
-      roles: checked ? [...prevUser.roles, {id: value}] : prevUser.roles.filter(role => role.id != value)
-    }))
+  // function handleRoleChange(event) {
+  //   const {checked, value} = event.target
+  //   setUserFormData(prevUser => ({
+  //     ...prevUser,
+  //     roles: checked ? [...prevUser.roles, {id: value}] : prevUser.roles.filter(role => role.id != value)
+  //   }))
 
-    // setUserFormData(prevUser => ({
-    //   ...prevUser,
-    //   roles: checked ? [...prevUser.roles, value] : prevUser.roles.filter(role => role.id !== value)
-    // }))
-    console.log(userFormData.roles)
-  }
+  //   console.log(userFormData.roles)
+  // }
 
   function handlePostUser() {
     setMethod("POST")
+    // Set the normal user details first
+    setUserFormData({
+      id: "",
+      firstName: "",
+      lastName: "",
+      username: "",
+      password: "",
+      enabled: false,
+      accountNonExpired: false,
+      accountNonLocked: false,
+      createdAt: "",
+      updatedAt: "",
+      credentialsNonExpired: ""
+    })
+
+    // Add the roles
+    roles.data.map(role => {
+      setUserFormData(prevUserFormData => ({
+        ...prevUserFormData,
+        [role.name]: false,
+      }))
+    })
     userDialog.current.showModal()
   }
 
   function handleEditUser(user) {
     setMethod("PUT")
-    setUserFormData({...user})
+
+    const newFormDataWithoutRoles = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      enabled: user.enabled,
+      accountNonExpired: user.accountNonExpired,
+      accountNonLocked: user.accountNonLocked,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      credentialsNonExpired: user.credentialsNonExpired
+    }
+
+    // Set user form data without the roles array, maintain the roles boolean
+    setUserFormData({
+      ...newFormDataWithoutRoles, // Put this to put the new user details overwriting the previous ones
+    })
+
+    // Reset all roles to false
+    roles.data.map(role => {
+      setUserFormData(prevUserFormData => ({
+        ...prevUserFormData,
+        [role.name]: false,
+      }))
+    })
+
+    // Set the roles found to true...
+    user.roles.map(role => {
+      setUserFormData(prevUserFormData => ({
+        ...prevUserFormData,
+        [role.name]: true
+      }))
+    })
+    // for(let i = 0; i < user.roles.length; i++) {
+    //   setUserFormData(prevUserFormData => ({
+    //     ...prevUserFormData,
+    //     [user.roles[i].name]: true
+    //   }))
+    // }
+
+    console.log(user.roles)
     userDialog.current.showModal()
   }
 
@@ -76,7 +147,8 @@ export default function UserPage() {
     if(method === "POST") {
       dispatch(postUser(userFormData))
     } else if(method === "PUT") {
-
+      const {password, ...userFormDataWithoutPassword} = userFormData
+      dispatch(putUser(userFormDataWithoutPassword))
     }
   }
 
@@ -86,14 +158,13 @@ export default function UserPage() {
   }
 
   function seeRoles(user) {
-    console.log(user)
     setUserFormData({...user})
     roleDialog.current.showModal()
   }
 
   return (
     <>
-      <dialog id="role-dialog" ref={roleDialog}>
+      {/* <dialog id="role-dialog" ref={roleDialog}>
         {
           userFormData.roles.length > 0 ?
           <div>
@@ -103,7 +174,7 @@ export default function UserPage() {
           <p>No roles assigned to user</p>
         }
         <button onClick={() => roleDialog.current.close()}>Close</button>
-      </dialog>
+      </dialog> */}
 
       <dialog ref={userDialog}>
         <form method={method} onSubmit={handleSubmit}>
@@ -119,25 +190,36 @@ export default function UserPage() {
             <label htmlFor="username">Username</label>
             <input id="username" type="text" placeholder="Username" name="username" value={userFormData.username} onChange={handleUserFormChange}/>
           </div>
-          <div>
+          {
+            // Only show password field wen posting a user
+            method === "POST" &&
+            <div>
             <label htmlFor="password">Password</label>
             <input id="password" type="password" placeholder="Password" name="password" value={userFormData.password} onChange={handleUserFormChange}/>
           </div>
+          }
+          
 
           <fieldset>
             <legend>Roles</legend>
-            {roles.data.map(role => (
+            {
+            roles.data.map(role => (
               <div key={role.id}>
-                <input id={role.name} type="checkbox" value={role.id} onChange={handleRoleChange}/>
+                <input id={role.name} type="checkbox" name={role.name} checked={role[role.name]} onChange={handleUserFormChange}/>
                 <label htmlFor={role.name} >{role.name}</label>
               </div>
-            ))}
+            ))
+            }
           </fieldset>
           <button>{method === "POST" ? "Add" : "Edit"} User</button>
         </form>
       </dialog>
-      <button onClick={handlePostUser}>Add User</button>
-      <table>
+
+      <button type="button" onClick={handlePostUser}>Add User</button>
+      {
+        users.loading ?
+        <p>Loading...</p> :
+        <table>
         <thead>
           <tr>
             <th>First Name</th>
@@ -170,6 +252,8 @@ export default function UserPage() {
           }
         </tbody>
       </table>
+      }
+
     </>
   )
 }

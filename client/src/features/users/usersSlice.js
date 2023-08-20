@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { server } from "../../axiosInstances";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
     loading: false,
     data: [],
     error: ""
 }
+
 
 export const getUsers = createAsyncThunk("users/getUsers", async () => {
     let response = await server.get("admin/users/get")
@@ -26,6 +28,7 @@ export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
     await server.delete(`admin/users/delete/${id}`)
     return id
 })
+
 const usersSlice = createSlice({
     name: "users",
     initialState,
@@ -45,7 +48,7 @@ const usersSlice = createSlice({
             .addCase(getUsers.rejected, (state, action) => {
                 state.loading = false
                 state.data = []
-                state.error = action.payload
+                state.error = action.error.message                
             })
 
             // Put Users

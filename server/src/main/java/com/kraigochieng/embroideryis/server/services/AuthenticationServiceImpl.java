@@ -4,7 +4,10 @@ import com.kraigochieng.embroideryis.server.authentication.LoginRequest;
 import com.kraigochieng.embroideryis.server.authentication.RegisterRequest;
 import com.kraigochieng.embroideryis.server.models.User;
 import com.kraigochieng.embroideryis.server.repositories.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,17 +16,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthenticationServiceImpl {
     // Saving user, querying for user
-    private final UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
     // To Generate Tokens
-    private final JwtServiceImpl jwtServiceImpl;
+    @Autowired
+    JwtServiceImpl jwtServiceImpl;
     // To encode password input by user
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     // Login
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     public String login(LoginRequest loginRequest) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
@@ -35,13 +45,12 @@ public class AuthenticationServiceImpl {
 
     public String register(RegisterRequest registerRequest) {
         // Make user
-        User user = User.builder()
-                .firstName(registerRequest.getFirstName())
-                .lastName(registerRequest.getLastName())
-                .username(registerRequest.getUsername())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .roles(registerRequest.getRoles())
-                .build();
+        User user = new User();
+        user.setFirstName(registerRequest.getFirstName());
+        user.setLastName(registerRequest.getLastName());
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRoles(registerRequest.getRoles());
 
         // Save user
         userRepository.save(user);

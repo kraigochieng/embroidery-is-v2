@@ -3,6 +3,7 @@ package com.kraigochieng.embroideryis.server.controllers;
 import com.kraigochieng.embroideryis.server.models.User;
 import com.kraigochieng.embroideryis.server.services.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,10 +22,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/admin/users")
-@RequiredArgsConstructor
 @CrossOrigin
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    @Autowired
+    UserServiceImpl userServiceImpl;
     @GetMapping(path = "get")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getUsers() {

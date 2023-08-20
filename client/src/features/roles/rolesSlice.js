@@ -26,6 +26,7 @@ export const deleteRole = createAsyncThunk("roles/deleteRole", async (id) => {
     await server.delete(`admin/roles/delete/${id}`)
     return id
 })
+
 const rolesSlice = createSlice({
     name: "roles",
     initialState,
@@ -86,7 +87,7 @@ const rolesSlice = createSlice({
                 state.error = action.payload
             })
 
-            // Post Role
+            // Delete Role
             .addCase(deleteRole.pending, (state) => {
                 state.loading = true
             })

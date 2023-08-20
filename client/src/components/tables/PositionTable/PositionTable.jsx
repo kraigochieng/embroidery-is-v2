@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPositions } from '../../features/positions/positionsSlice'
-
+import { getPositions } from '../../../features/positions/positionsSlice'
+import '../Table.css'
 export default function PositionTable(props) {
     const dispatch = useDispatch()
     const items = useSelector(state => state.positions)

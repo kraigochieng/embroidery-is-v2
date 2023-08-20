@@ -1,36 +1,38 @@
 import './App.css'
 import {Routes, Route} from "react-router-dom"
-import AdminNavbar from './components/navbars/AdminNavbar'
-import UserPage from './pages/UserPage'
-import ColourPage from './pages/ColourPage'
-import ItemPage from './pages/ItemPage'
-import StoreNavbar from './components/navbars/StoreNavbar'
-import PositionPage from './pages/PositionPage'
+
+
+import Navbar from './components/Navbar'
+// Pages
 import HomePage from './pages/HomePage'
-import HomeNavbar from './components/navbars/HomeNavbar'
 import AdminPage from './pages/AdminPage'
 import StorePage from './pages/StorePage'
 import AuthPage from './pages/AuthPage'
+import UserPage from './pages/UserPage'
+import ColourPage from './pages/ColourPage'
+import ItemPage from './pages/ItemPage'
+import PositionPage from './pages/PositionPage'
 
 function App() {
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<HomeNavbar />}>
-         <Route index element={<HomePage />}/>
+          <Route path="/" element={<Navbar />}>
+              <Route index element={<HomePage />}/>
+              <Route path="admin">
+                  <Route index element={<AdminPage />} />
+                  <Route path="store">
+                      <Route index element={<StorePage />} />
+                      <Route path="items" element={<ItemPage />} />
+                      <Route path="colours" element={<ColourPage />} />
+                      <Route path="positions" element={<PositionPage />} />
+                  </Route>
+                  <Route path="users" element={<UserPage />} />
+              </Route>
         </Route>
-        <Route path="/admin" element={<AdminNavbar />}>
-          <Route index element={<AdminPage />} />
-          <Route path="store" element={<StoreNavbar />}>
-            <Route index element={<StorePage />} />
-            <Route path="items" element={<ItemPage />} />
-            <Route path="colours" element={<ColourPage />} />
-            <Route path="positions" element={<PositionPage />} />
-          </Route>
-          <Route path="users" element={<UserPage />} />
-        </Route>
-        <Route path="/auth" element={<AuthPage />} />
+        {/* Its is not in root because it does ot require a bar */}
+        <Route path="/auth" element={<AuthPage />} /> 
       </Routes>
     </>
   )

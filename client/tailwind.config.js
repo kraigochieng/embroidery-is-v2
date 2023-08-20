@@ -6,7 +6,17 @@ export default {
   ],
   
   theme: {
-    extend: {},
+    fontFamily: {
+      'serif': ['Georgia'],
+      'sansSerif': ['Helvetica'],
+    },
+    extend: {
+      colors: {
+        'darkBlue': '#03254C',
+        'lightBlue': '#1167B1',
+        'lightestBlue': '#D0EFFF',
+      }
+    },
   },
   plugins: [],
 }

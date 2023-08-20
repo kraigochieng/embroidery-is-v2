@@ -40,7 +40,6 @@ export const positionSlice = createSlice({
             .addCase(getPositions.fulfilled, (state, action) => {
                 state.loading = false
                 state.data = [...action.payload]
-                console.log(action.payload)
                 state.error = ""
             })
 

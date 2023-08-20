@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getItems } from '../../features/items/itemsSlice'
+import { getItems } from '../../../features/items/itemsSlice'
 export default function ItemTable(props) {
     const { handlePutItem, handleDeleteItem } = props
     const items = useSelector(state => state.items)
@@ -37,5 +37,34 @@ export default function ItemTable(props) {
             <p>Loading...</p>
         }
         </>
+    )
+}
+import React from 'react'
+
+export default function ItemTable(props) {
+    const { items, handleEdit, handleRemove } = props
+
+    function ItemRow(props) {
+        const {item} = props 
+        return  (
+            <tr>
+                <td>{item.name}</td>
+                <td><button onClick={() => handleEdit(item)}>Edit</button></td>
+                <td><button onClick={() => handleRemove(item.id)}>Remove</button></td>
+            </tr>
+        )
+    }
+
+    return (
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {items.map(item => <ItemRow key={item.id} item={item} />)}
+            </tbody>
+        </table>
     )
 }

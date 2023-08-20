@@ -27,6 +27,15 @@ export const deleteColour = createAsyncThunk("colours/deleteColour", async (id) 
     return id
 })
 
+export const deleteColours = createAsyncThunk("colours/deleteColours", async (colourIds) => {
+    let response = await server.delete("admin/colours/delete/list", {
+        data: {
+            ids: colourIds
+        }
+    })
+    return colourIds
+})
+
 const coloursSlice = createSlice({
     name: "colours",
     initialState,
@@ -49,8 +58,6 @@ const coloursSlice = createSlice({
                 state.error = action.payload
             })
 
-            
-
             // Put Colours
             .addCase(putColour.pending, (state) => {
                 state.loading = true
@@ -58,7 +65,6 @@ const coloursSlice = createSlice({
 
             .addCase(putColour.fulfilled, (state, action) => {
                 state.loading = false
-                console.log(state.data)
                 state.data =  state.data.map(colour => {
                     return colour.id === action.payload.id ? action.payload : colour
                 })
@@ -100,6 +106,23 @@ const coloursSlice = createSlice({
             })
 
             .addCase(deleteColour.rejected, (state, action) => {
+                state.loading = false
+                state.data = []
+                state.error = action.payload
+            })
+
+            // Delete Many Colours at once
+            .addCase(deleteColours.pending, (state) => {
+                state.loading = true
+            })
+
+            .addCase(deleteColours.fulfilled, (state, action) => {
+                state.loading = false
+                state.data = state.data.filter(colour => !action.payload.includes(colour.id))
+                state.error = ""
+            })
+
+            .addCase(deleteColours.rejected, (state, action) => {
                 state.loading = false
                 state.data = []
                 state.error = action.payload

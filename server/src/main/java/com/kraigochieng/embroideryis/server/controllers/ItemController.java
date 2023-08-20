@@ -1,5 +1,7 @@
 package com.kraigochieng.embroideryis.server.controllers;
 
+import com.kraigochieng.embroideryis.server.dtos.Identifiers;
+import com.kraigochieng.embroideryis.server.dtos.ItemCreation;
 import com.kraigochieng.embroideryis.server.services.ItemServiceImpl;
 import com.kraigochieng.embroideryis.server.models.Item;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +38,10 @@ public class ItemController {
 
     @PostMapping(path = "post")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Item> addItem(@RequestBody Item item) {
-        return itemServiceImpl.addItem(item);
+    public ResponseEntity<Item> addItem(@RequestBody ItemCreation itemCreation) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(itemServiceImpl.addItem(itemCreation));
     }
 
     @PutMapping(path = "put/{id}")
@@ -49,8 +53,18 @@ public class ItemController {
     }
     @DeleteMapping(path = "delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> removeColour(@PathVariable Long id) {
+    public ResponseEntity<Void> removeItem(@PathVariable Long id) {
         itemServiceImpl.removeItem(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @DeleteMapping(path = "delete/list")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removeItems(@RequestBody Identifiers<Long> itemIds) {
+        itemServiceImpl.removeItems(itemIds);
+
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

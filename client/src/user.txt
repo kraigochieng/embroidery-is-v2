@@ -1,0 +1,13 @@
+accountNonExpired: true
+accountNonLocked: true
+authorities: Array [ {…} ]
+createdAt: "2023-07-27T11:50:57.02151"
+credentialsNonExpired: true
+enabled: true
+firstName: "Krysha"
+id: 52
+lastName: "Taji"
+password: "$2a$10$XLb/A35lff.Q78mYPqzmQuihID80VwZappRB6J3KezDLfBGwk/AVG"
+roles: Array [ {…} ]
+updatedAt: null
+username: "taji"

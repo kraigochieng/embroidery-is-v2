@@ -26,6 +26,15 @@ export const deleteItem = createAsyncThunk("items/deleteItem", async (id) => {
     return id
 })
 
+export const deleteItems = createAsyncThunk("items/deleteItems", async (itemIds) => {
+    let response = await server.delete("admin/items/delete/list", {
+        data: {
+            ids: itemIds
+        } 
+    })
+    return itemIds
+})
+
 const itemsSlice = createSlice({
     name: "items",
     initialState,
@@ -79,7 +88,7 @@ const itemsSlice = createSlice({
             })
 
             // Delete Item
-            .addCase(deleteItem.pending, (state, action) => {
+            .addCase(deleteItem.pending, (state) => {
                 state.loading = true
             })
             .addCase(deleteItem.fulfilled, (state, action) => {
@@ -88,6 +97,22 @@ const itemsSlice = createSlice({
                 state.error = ""
             })
             .addCase(deleteItem.rejected, (state, action) => {
+                state.loading = false
+                state.data = []
+                state.error = action.payload
+            })
+
+            // Delete Items
+            .addCase(deleteItems.pending, (state) => {
+                state.loading = true
+            })
+
+            .addCase(deleteItems.fulfilled, (state, action) => {
+                state.loading = false
+                state.data = state.data.filter(item => !action.payload.includes(item.id))
+                state.error = ""
+            })
+            .addCase(deleteItems.rejected, (state, action) => {
                 state.loading = false
                 state.data = []
                 state.error = action.payload

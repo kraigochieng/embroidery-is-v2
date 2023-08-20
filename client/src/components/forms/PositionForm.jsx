@@ -1,15 +1,23 @@
-import React from 'react'
+import {useEffect} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getItems } from '../../features/items/itemsSlice'
 
 export default function PositionForm(props) {
+    const items  = useSelector(state => state.items)
+    const dispatch = useDispatch()
 
-    const {positionFormData, items, method, handleChange, handleSubmit} = props
+    useEffect(() => {
+        dispatch(getItems())
+    }, [])
+    
+    const {positionFormData, method, handleChange, handleSubmit} = props
 
     return (
         <form onSubmit={handleSubmit}>
             <label htmlFor="item-select">Item</label>
             <select id="item-select" name="itemId" value={positionFormData.itemId} onChange={handleChange}>
                 <option value="" disabled>Choose</option>
-                {items.map(item => (
+                {items.data.map(item => (
                     <option key={item.id} value={item.id}>{item.name}</option>
                 ))}
             </select>

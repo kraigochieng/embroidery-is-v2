@@ -1,7 +1,10 @@
 package com.kraigochieng.embroideryis.server.controllers;
 
+import com.kraigochieng.embroideryis.server.dtos.ColourCreation;
+import com.kraigochieng.embroideryis.server.dtos.Identifiers;
 import com.kraigochieng.embroideryis.server.models.Colour;
 import com.kraigochieng.embroideryis.server.services.ColourServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/api/admin/colours")
 @CrossOrigin
+@Slf4j
 public class ColourController {
     @Autowired
     ColourServiceImpl colourServiceImpl;
@@ -27,10 +31,10 @@ public class ColourController {
 
     @PostMapping(path = "post")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Colour> addColour(@RequestBody Colour colour) {
+    public ResponseEntity<Colour> addColour(@RequestBody ColourCreation colourCreation) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(colourServiceImpl.addColour(colour));
+                .body(colourServiceImpl.addColour(colourCreation));
     }
 
     @PutMapping(path = "put/{id}")
@@ -45,6 +49,15 @@ public class ColourController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> removeColour(@PathVariable Long id) {
         colourServiceImpl.removeColour(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @DeleteMapping(path = "delete/list")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removeColours(@RequestBody Identifiers<Long> colourIds) {
+        colourServiceImpl.removeColours(colourIds);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
