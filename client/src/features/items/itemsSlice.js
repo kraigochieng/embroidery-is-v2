@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { server } from "../../axiosInstances"
+import { admin } from "../../axiosInstances"
 
 const initialState = {
     loading: false,
@@ -8,31 +8,29 @@ const initialState = {
 }
 
 export const getItems = createAsyncThunk("items/getItems", async () => {
-        let response = await server.get("admin/items/get")
+        let response = await admin.get("items")
         return response.data
     }) 
 
 export const postItem = createAsyncThunk("items/postItem", async (item) => {
-    let response = await server.post("admin/items/post", item)
+    let response = await admin.post("items", item)
     return response.data
 })
 
-export const putItem = createAsyncThunk("items/putItem", async (item) => {
-    let response = await server.put(`admin/items/put/${item.id}`, item)
+export const putItem = createAsyncThunk("items/putItem", async ({id, item}) => {
+    let response = await admin.put(`items/${id}`, item)
     return response.data
 })
 export const deleteItem = createAsyncThunk("items/deleteItem", async (id) => {
-    let response = await server.delete(`admin/items/delete/${id}`)
+    let response = await admin.delete(`items/${id}`)
     return id
 })
 
-export const deleteItems = createAsyncThunk("items/deleteItems", async (itemIds) => {
-    let response = await server.delete("admin/items/delete/list", {
-        data: {
-            ids: itemIds
-        } 
+export const deleteItems = createAsyncThunk("items/deleteItems", async (itemsIdsObject) => {
+    let response = await admin.delete("items", {
+        data: itemsIdsObject
     })
-    return itemIds
+    return itemsIdsObject
 })
 
 const itemsSlice = createSlice({
@@ -109,7 +107,7 @@ const itemsSlice = createSlice({
 
             .addCase(deleteItems.fulfilled, (state, action) => {
                 state.loading = false
-                state.data = state.data.filter(item => !action.payload.includes(item.id))
+                state.data = state.data.filter(item => !action.payload.ids.includes(item.id))
                 state.error = ""
             })
             .addCase(deleteItems.rejected, (state, action) => {
