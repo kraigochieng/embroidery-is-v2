@@ -1,8 +1,8 @@
 package com.kraigochieng.embroideryis.server.controllers;
 
-import com.kraigochieng.embroideryis.server.models.User;
-import com.kraigochieng.embroideryis.server.services.UserServiceImpl;
-import lombok.RequiredArgsConstructor;
+import com.kraigochieng.embroideryis.server.dtos.AuthenticationRequest;
+import com.kraigochieng.embroideryis.server.models.UserEntity;
+import com.kraigochieng.embroideryis.server.services.UserEntityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,41 +19,42 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/admin/users")
 @CrossOrigin
 public class UserController {
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserEntityServiceImpl userEntityServiceImpl;
     @GetMapping(path = "get")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<User>> getUsers() {
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public ResponseEntity<List<UserEntity>> getUsers() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userServiceImpl.getUsers());
+                .body(userEntityServiceImpl.getUsers());
     }
 
     @PostMapping(path = "post")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    @PreAuthorize("hasAuthority('SCOPE_CREATE_USER')")
+    public ResponseEntity<UserEntity> addUser(@RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userServiceImpl.addUser(user));
+                .body(userEntityServiceImpl.addUser(authenticationRequest));
     }
 
     @PutMapping(path = "put/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> editUser(@RequestBody User editedUser, @PathVariable Long id) {
+    @PreAuthorize("hasAuthority('SCOPE_UPDATE_USER')")
+    public ResponseEntity<UserEntity> editUser(@RequestBody UserEntity editedUserEntity, @PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userServiceImpl.editUser(editedUser, id));
+                .body(userEntityServiceImpl.editUser(editedUserEntity, id));
     }
 
     @DeleteMapping(path = "delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> removeUser(@PathVariable Long id) {
-        userServiceImpl.removeUser(id);
+    @PreAuthorize("hasAuthority('SCOPE_DELETE_USER')")
+    public ResponseEntity<Void> removeUser(@PathVariable UUID id) {
+        userEntityServiceImpl.removeUser(id);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

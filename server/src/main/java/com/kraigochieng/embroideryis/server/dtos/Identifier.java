@@ -1,4 +1,4 @@
-package com.kraigochieng.embroideryis.server.dtos.ids;
+package com.kraigochieng.embroideryis.server.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

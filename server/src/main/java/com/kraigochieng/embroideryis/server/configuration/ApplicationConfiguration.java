@@ -1,6 +1,6 @@
 package com.kraigochieng.embroideryis.server.configuration;
 
-import com.kraigochieng.embroideryis.server.repositories.UserRepository;
+import com.kraigochieng.embroideryis.server.repositories.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ApplicationConfiguration {
-    private UserRepository userRepository;
     @Autowired
-    public ApplicationConfiguration(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    UserEntityRepository userEntityRepository;
 
     // Password Encoder
     @Bean
@@ -28,7 +25,7 @@ public class ApplicationConfiguration {
     // UserDetailsService
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("User not found in user details service"));
+        return username -> userEntityRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("User not found in user details service"));
     }
 
     // AuthenticationProvider

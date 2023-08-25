@@ -1,17 +1,15 @@
 package com.kraigochieng.embroideryis.server.mappers;
 
-import com.kraigochieng.embroideryis.server.dtos.ColourCreation;
+import com.kraigochieng.embroideryis.server.dtos.ColourRequest;
 import com.kraigochieng.embroideryis.server.models.Colour;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
-@Mapper
-public interface ColourMapper {
-    ColourMapper INSTANCE = Mappers.getMapper(ColourMapper.class);
 
-    default Colour ColourCreationToColour(ColourCreation colourCreation) {
+@Component
+public class ColourMapper {
+    public Colour colourCreationToColour(ColourRequest colourRequest) {
         Colour colour = new Colour();
-        colour.setName(colourCreation.getName());
+        colour.setName(colourRequest.getName());
         return colour;
     }
 }

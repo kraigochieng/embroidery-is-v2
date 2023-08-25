@@ -1,5 +1,8 @@
 package com.kraigochieng.embroideryis.server.services;
 
+import com.kraigochieng.embroideryis.server.dtos.*;
+import com.kraigochieng.embroideryis.server.mappers.ItemMapper;
+import com.kraigochieng.embroideryis.server.mappers.PositionMapper;
 import com.kraigochieng.embroideryis.server.models.Item;
 import com.kraigochieng.embroideryis.server.models.Position;
 import com.kraigochieng.embroideryis.server.repositories.ItemRepository;
@@ -9,35 +12,75 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class PositionServiceImpl implements PositionService{
     @Autowired
     PositionRepository positionRepository;
+
     @Autowired
     ItemRepository itemRepository;
 
-    public Position addPosition(Position position, Long itemId) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalStateException("Item not found"));
-        position.setItem(item);
-        item.getPositions().add(position);
-        return positionRepository.save(position);
-    }
+    @Autowired
+    ItemMapper itemMapper;
 
-    public List<Position> getPositions() {
-        return positionRepository.findAll();
-    }
+    @Autowired
+    PositionMapper positionMapper;
 
-    public String removePosition(Long positionId) {
-        positionRepository.deleteById(positionId);
-        return "Position with ID: " + positionId + "deleted";
-    }
+    @Override
     @Transactional
-    public Position editPosition(Position editedPosition, Long positionId) {
+    public PositionSummary addPosition(PositionRequest positionRequest, UUID itemId) {
+        // Get Item liked to position
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new IllegalStateException("Item not found"));
+
+        // Map DTO to Entity
+        Position positionToSave = positionMapper.positionRequestToPosition(positionRequest);
+
+        // Set Relations, sort out the bidirectional relationship
+        positionToSave.setItem(item);
+
+        // Save
+        Position position = positionRepository.save(positionToSave);
+
+        // Map Entity TO DTO
+        return positionMapper.positionToPositionSummary(position);
+    }
+
+    @Override
+    public List<PositionSummary> getPositions() {
+        return positionRepository.findAll().stream()
+                .map(positionMapper::positionToPositionSummary)
+                .toList();
+    }
+
+    @Override
+    public List<PositionSummary> getPositionsForItem(UUID itemId) {
+        return positionRepository.findAll().stream()
+                .filter(position -> Objects.equals(position.getItem().getId(), itemId))
+                .map(positionMapper::positionToPositionSummary)
+                .toList();
+    }
+
+    @Override
+    public void removePosition(UUID positionId) {
+        positionRepository.deleteById(positionId);
+    }
+
+    @Override
+    @Transactional
+    public PositionSummary editPosition(PositionRequest positionRequest, UUID positionId) {
         Position position = positionRepository.findById(positionId).orElseThrow(() -> new IllegalStateException("Position not edited"));
-        if(position.getName() != editedPosition.getName() && editedPosition.getName().length() > 0){
-            position.setName(editedPosition.getName());
+        if(!Objects.equals(position.getName(), positionRequest.getName())){
+            position.setName(positionRequest.getName());
         }
-        return position;
+
+        return positionMapper.positionToPositionSummary(position);
+    }
+
+    @Override
+    public void removePositions(Identifiers<UUID> positionIds) {
+        positionRepository.deleteAllById(positionIds.getIds());
     }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { server } from '../axiosInstances'
+import { admin } from '../axiosInstances'
 import PositionForm from '../components/forms/PositionForm'
 import PositionTable from '../components/tables/PositionTable'
 import { useDispatch } from 'react-redux'
@@ -47,7 +47,7 @@ export default function PositionPage() {
     function handleSubmit(event) {
         event.preventDefault()
         if(method === "POST") {
-            server.post(`admin/positions/post/${positionFormData.itemId}`, positionFormData)
+            admin.post(`positions/post/${positionFormData.itemId}`, positionFormData)
                 .then(response => {
                     setItems(prevItems => {
                         // Return Items array 
@@ -65,7 +65,7 @@ export default function PositionPage() {
                 })
                 .catch(error => console.error(error))
         } else if(method === "PUT") {
-            server.put(`admin/positions/put/${positionFormData.positionId}`, positionFormData)
+            admin.put(`positions/put/${positionFormData.positionId}`, positionFormData)
                 .then(response => {
                     console.log(response.data)
                     setItems(prevItems => {
@@ -104,7 +104,7 @@ export default function PositionPage() {
 
     return (
     <div className="page">
-        <button onClick={handlePostPosition}>Add Position</button>
+        <button onMouseUp={handlePostPosition}>Add Position</button>
         <dialog ref={dialogRef}>
             <PositionForm
                 positionFormData={positionFormData}

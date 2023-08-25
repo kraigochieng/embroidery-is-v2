@@ -1,5 +1,5 @@
 package com.kraigochieng.embroideryis.server.services;
-import com.kraigochieng.embroideryis.server.dtos.ColourCreation;
+import com.kraigochieng.embroideryis.server.dtos.ColourRequest;
 import com.kraigochieng.embroideryis.server.dtos.Identifiers;
 import com.kraigochieng.embroideryis.server.mappers.ColourMapper;
 import com.kraigochieng.embroideryis.server.models.Colour;
@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class ColourServiceImpl implements ColourService{
@@ -19,30 +21,32 @@ public class ColourServiceImpl implements ColourService{
         return colourRepository.findAll();
     }
 
+    @Autowired
+    ColourMapper colourMapper;
     @Override
-    public Colour addColour(ColourCreation colourCreation) {
-        Colour colour = ColourMapper.INSTANCE.ColourCreationToColour(colourCreation);
+    public Colour addColour(ColourRequest colourRequest) {
+        Colour colour = colourMapper.colourCreationToColour(colourRequest);
         return colourRepository.save(colour);
     }
 
     @Transactional
     @Override
-    public Colour editColour(Colour editedColour, Long id) {
+    public Colour editColour(ColourRequest colourRequest, UUID id) {
         Colour colour = colourRepository.findById(id).orElseThrow(() -> new IllegalStateException("Colour not found during edit"));
-        if(colour.getName() != editedColour.getName() && editedColour.getName().length() > 0) {
-            colour.setName(editedColour.getName());
+        if(!Objects.equals(colour.getName(), colourRequest.getName())) {
+            colour.setName(colourRequest.getName());
         }
 
         return colour;
     }
 
     @Override
-    public void removeColour(Long id) {
+    public void removeColour(UUID id) {
         colourRepository.deleteById(id);
     }
 
     @Override
-    public void removeColours(Identifiers<Long> colourIds) {
+    public void removeColours(Identifiers<UUID> colourIds) {
         colourRepository.deleteAllById(colourIds.getIds());
     }
 }

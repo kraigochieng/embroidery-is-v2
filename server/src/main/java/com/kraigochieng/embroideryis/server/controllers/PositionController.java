@@ -1,6 +1,8 @@
 package com.kraigochieng.embroideryis.server.controllers;
 
-import com.kraigochieng.embroideryis.server.models.Position;
+import com.kraigochieng.embroideryis.server.dtos.Identifiers;
+import com.kraigochieng.embroideryis.server.dtos.PositionRequest;
+import com.kraigochieng.embroideryis.server.dtos.PositionSummary;
 import com.kraigochieng.embroideryis.server.services.PositionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,45 +20,64 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/api/admin/positions")
+@RequestMapping(path = "/api/admin")
 @CrossOrigin
 public class PositionController {
+    private final String urlWithItems = "items/{itemId}/positions";
+    private final String plainUrl = "positions";
     @Autowired
     PositionServiceImpl positionServiceImpl;
 
-    @GetMapping(path = "get")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Position>> getPositions() {
+    @GetMapping(path = plainUrl)
+    @PreAuthorize("hasAuthority('SCOPE_READ_POSITION')")
+    public ResponseEntity<List<PositionSummary>> getPositions() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(positionServiceImpl.getPositions());
     }
 
-    @PostMapping(path = "post/{itemId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Position> addPosition(@RequestBody Position position, @PathVariable Long itemId) {
+    @GetMapping(path = urlWithItems)
+    @PreAuthorize("hasAuthority('SCOPE_READ_POSITION')")
+    public ResponseEntity<List<PositionSummary>> getPositionsForItem(@PathVariable UUID itemId) {
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(positionServiceImpl.addPosition(position, itemId));
+                .status(HttpStatus.OK)
+                .body(positionServiceImpl.getPositionsForItem(itemId));
     }
 
-    @DeleteMapping(path = "delete/{positionId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> removePosition(@PathVariable Long positionId) {
+    @PostMapping(path = urlWithItems)
+    @PreAuthorize("hasAuthority('SCOPE_CREATE_POSITION')")
+    public ResponseEntity<PositionSummary> addPosition(@RequestBody PositionRequest positionRequest, @PathVariable UUID itemId) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(positionServiceImpl.addPosition(positionRequest, itemId));
+    }
+
+    @PutMapping(path = plainUrl + "/{positionId}")
+    @PreAuthorize("hasAuthority('SCOPE_UPDATE_POSITION')")
+    public ResponseEntity<PositionSummary> editPosition(@RequestBody PositionRequest positionRequest,@PathVariable UUID positionId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(positionServiceImpl.editPosition(positionRequest, positionId));
+    }
+
+    @DeleteMapping(path = plainUrl + "/{positionId}")
+    @PreAuthorize("hasAuthority('SCOPE_DELETE_POSITION')")
+    public ResponseEntity<Void> removePosition(@PathVariable UUID positionId) {
         positionServiceImpl.removePosition(positionId);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
-    @PutMapping(path = "put/{positionId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Position> editPosition(@RequestBody Position editedPosition,@PathVariable Long positionId) {
+    @DeleteMapping(path = plainUrl)
+    @PreAuthorize("hasAuthority('SCOPE_DELETE_POSITION')")
+    public ResponseEntity<Void> removePositions(@RequestBody Identifiers<UUID> positionIds) {
+        positionServiceImpl.removePositions(positionIds);
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(positionServiceImpl.editPosition(editedPosition, positionId));
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
-
 }

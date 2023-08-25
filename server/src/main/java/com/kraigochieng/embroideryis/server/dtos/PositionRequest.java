@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ColourRequest {
+
+public class PositionRequest {
     private String name;
 }

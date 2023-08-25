@@ -1,17 +1,43 @@
 package com.kraigochieng.embroideryis.server.mappers;
 
-import com.kraigochieng.embroideryis.server.dtos.ItemCreation;
+import com.kraigochieng.embroideryis.server.dtos.ItemRequest;
+import com.kraigochieng.embroideryis.server.dtos.ItemWithPositions;
+import com.kraigochieng.embroideryis.server.dtos.ItemSummary;
 import com.kraigochieng.embroideryis.server.models.Item;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import com.kraigochieng.embroideryis.server.services.PositionServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Mapper
-public interface ItemMapper {
-    ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
+@Component
+public class ItemMapper {
+    @Autowired
+    PositionMapper positionMapper;
 
-    default Item itemCreationToItem(ItemCreation itemCreation) {
+//    @Autowired
+//    PositionServiceImpl positionServiceImpl;
+
+    public Item itemCreationToItem(ItemRequest itemRequest) {
         Item item = new Item();
-        item.setName(itemCreation.getName());
+        item.setName(itemRequest.getName());
         return item;
+    }
+
+    public ItemSummary itemToItemSummary(Item item) {
+        ItemSummary itemSummary = new ItemSummary();
+        itemSummary.setId(item.getId());
+        itemSummary.setName(item.getName());
+        return itemSummary;
+    }
+
+    public ItemWithPositions itemToItemWithPositions(Item item) {
+        ItemWithPositions itemWithPositions = new ItemWithPositions();
+        itemWithPositions.setId(item.getId());
+        itemWithPositions.setName(item.getName());
+
+//        itemWithPositions.setPositions(item.getPositions().stream()
+//                .map(positionMapper::positionToPositionSummary)
+//                .toList()
+//        );
+        return itemWithPositions;
     }
 }

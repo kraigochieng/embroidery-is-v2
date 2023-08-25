@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AuthenticationRequest {
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
-    private List<Role> roles;
+
+public class AuthResponse {
+    private String token;
+    private List<Role> authorities;
 }

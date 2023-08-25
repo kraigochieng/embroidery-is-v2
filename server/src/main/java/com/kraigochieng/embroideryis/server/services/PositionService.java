@@ -1,14 +1,17 @@
 package com.kraigochieng.embroideryis.server.services;
 
-import com.kraigochieng.embroideryis.server.models.Position;
+import com.kraigochieng.embroideryis.server.dtos.*;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PositionService {
-    public Position addPosition(Position position, Long itemId);
-    public List<Position> getPositions();
-    public String removePosition(Long positionId);
+    public PositionSummary addPosition(PositionRequest positionRequest, UUID itemId);
+    public List<PositionSummary> getPositions();
+    public List<PositionSummary> getPositionsForItem(UUID itemId);
+    public void removePosition(UUID positionId);
     @Transactional
-    public Position editPosition(Position editedPosition, Long positionId);
+    public PositionSummary editPosition(PositionRequest positionRequest, UUID positionId);
+    public void removePositions(Identifiers<UUID> positionIds);
 }

@@ -1,10 +1,9 @@
 package com.kraigochieng.embroideryis.server.services;
 
-import com.kraigochieng.embroideryis.server.authentication.LoginRequest;
-import com.kraigochieng.embroideryis.server.authentication.RegisterRequest;
-import com.kraigochieng.embroideryis.server.mappers.UserMapper;
-import com.kraigochieng.embroideryis.server.models.User;
-import com.kraigochieng.embroideryis.server.repositories.UserRepository;
+import com.kraigochieng.embroideryis.server.dtos.AuthorizationRequest;
+import com.kraigochieng.embroideryis.server.dtos.AuthenticationRequest;
+import com.kraigochieng.embroideryis.server.dtos.AuthResponse;
+import com.kraigochieng.embroideryis.server.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,47 +14,75 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationServiceImpl {
-    // Saving user, querying for user
+public class AuthServiceImpl implements AuthService{
     @Autowired
-    UserRepository userRepository;
-    // To Generate Tokens
+    UserEntityServiceImpl userEntityServiceImpl; // Saving user, querying for user
+
     @Autowired
-    JwtServiceImpl jwtServiceImpl;
-    // To encode password input by user
+    JwtServiceImpl jwtServiceImpl; // To generate token
+
     @Autowired
-    PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder; // To encode passwords for users registering
     // Login
     @Autowired
-    AuthenticationManager authenticationManager;
+    AuthenticationManager authenticationManager; // To authenticate users logging in
 
     @Autowired
-    UserDetailsService userDetailsService;
+    UserDetailsService userDetailsService; // To create UAP token
 
-    public String login(LoginRequest loginRequest) {
+    @Override
+    public AuthResponse login(AuthorizationRequest authorizationRequest) {
         // Get user details
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authorizationRequest.getUsername());
         // Get token
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, loginRequest.getPassword(),userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                authorizationRequest.getPassword(),
+                userDetails.getAuthorities()
+        );
         // Authenticate using up token
-        authenticationManager.authenticate(authenticationToken);
+        authenticationManager.authenticate(authenticationToken); // this will authenticate for us
+
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setToken(jwtServiceImpl.generateToken(authenticationToken));
+        authResponse.setAuthorities(extractAuthorities(authenticationToken));
         // Return JWT Token
-        return jwtServiceImpl.generateToken(authenticationToken);
+        return authResponse;
     }
 
-    public String register(RegisterRequest registerRequest) {
-
-        // Make user
-        User user = UserMapper.INSTANCE.registerRequestToUser(registerRequest, passwordEncoder.encode(registerRequest.getPassword()));
-
+    @Override
+    public AuthResponse register(AuthenticationRequest authenticationRequest) {
         // Save user
-        userRepository.save(user);
+        userEntityServiceImpl.addUser(authenticationRequest);
+
+        // Fetch User properly to get all credentials
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         // Generate token
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(registerRequest.getUsername(), registerRequest.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDetails.getPassword(),
+                userDetails.getAuthorities()
+        );
+
+        // Create response
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setToken(jwtServiceImpl.generateToken(authenticationToken));
+        authResponse.setAuthorities(extractAuthorities(authenticationToken));
+
         // Return token
-        return jwtServiceImpl.generateToken(authenticationToken);
+        return authResponse;
+    }
+
+
+    // helper function
+    public List<Role> extractAuthorities(UsernamePasswordAuthenticationToken authenticationToken) {
+        return authenticationToken.getAuthorities().stream()
+                .map(grantedAuthority -> Role.valueOf(grantedAuthority.getAuthority()))
+                .toList();
     }
 }

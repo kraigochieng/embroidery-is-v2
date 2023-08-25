@@ -15,8 +15,8 @@ export default function ColourTable(props) {
         return (
             <tr key={colour.id}>
                 <td>{colour.name}</td>
-                <td><button onClick={() => handlePutColour(colour)}>Edit</button></td>
-                <td><button onClick={() => handleDeleteColour(colour.id)}>Remove</button></td>
+                <td><button onMouseUp={() => handlePutColour(colour)}>Edit</button></td>
+                <td><button onMouseUp={() => handleDeleteColour(colour.id)}>Remove</button></td>
             </tr>
         )
     }

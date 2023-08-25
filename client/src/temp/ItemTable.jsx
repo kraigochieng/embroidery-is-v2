@@ -15,8 +15,8 @@ export default function ItemTable(props) {
         return  (
             <tr>
                 <td>{item.name}</td>
-                <td><button onClick={() => handlePutItem(item)}>Edit</button></td>
-                <td><button onClick={() => handleDeleteItem(item.id)}>Remove</button></td>
+                <td><button onMouseUp={() => handlePutItem(item)}>Edit</button></td>
+                <td><button onMouseUp={() => handleDeleteItem(item.id)}>Remove</button></td>
             </tr>
         )
     }
@@ -49,8 +49,8 @@ export default function ItemTable(props) {
         return  (
             <tr>
                 <td>{item.name}</td>
-                <td><button onClick={() => handleEdit(item)}>Edit</button></td>
-                <td><button onClick={() => handleRemove(item.id)}>Remove</button></td>
+                <td><button onMouseUp={() => handleEdit(item)}>Edit</button></td>
+                <td><button onMouseUp={() => handleRemove(item.id)}>Remove</button></td>
             </tr>
         )
     }

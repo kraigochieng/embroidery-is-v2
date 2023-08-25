@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { server } from '../axiosInstances'
+import { admin } from '../axiosInstances'
 import ItemTable from '../components/tables/ItemTable'
 import ItemForm from '../components/forms/ItemForm'
 export default function ItemPage() {
@@ -12,7 +12,7 @@ export default function ItemPage() {
     const [items, setItems] = useState([])
 
     useEffect(() => {
-        server.get("admin/items/get")
+        admin.get("items/get")
             .then(response => setItems([...response.data]))
             .catch(error => console.error(error))
     }, [])
@@ -46,7 +46,7 @@ export default function ItemPage() {
     }
     
     function handleRemove(id) {
-        server.delete(`admin/items/delete/${id}`)
+        admin.delete(`items/delete/${id}`)
             .then(response => {
                 setItems(prevItems => {
                     return prevItems.filter(item => {
@@ -59,13 +59,13 @@ export default function ItemPage() {
     function handleSubmit(event) {
         event.preventDefault()
         if(method === "POST") {
-            server.post("admin/items/post", itemFormData)
+            admin.post("items/post", itemFormData)
                 .then(response => {
                     setItems(prevItems => [...prevItems, response.data])
                 })
                 .catch(error => console.error(error))
         } else if(method === "PUT") {
-            server.put(`admin/items/put/${itemFormData.id}`, itemFormData)
+            admin.put(`items/put/${itemFormData.id}`, itemFormData)
                 .then(response => setItems(prevItems => {
                     return prevItems.map(item => {
                         // Update the name
@@ -78,7 +78,7 @@ export default function ItemPage() {
     }
   return (
     <div className="page">
-        <button onClick={handleAdd}>Add Item</button>
+        <button onMouseUp={handleAdd}>Add Item</button>
         <dialog ref={dialogRef}>
             <ItemForm
                 itemFormData={itemFormData}

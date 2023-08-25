@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ItemCreationRequest {
+public class ItemRequest {
     private String name;
 }

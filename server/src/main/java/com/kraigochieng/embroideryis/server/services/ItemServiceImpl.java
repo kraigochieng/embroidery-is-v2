@@ -1,49 +1,57 @@
 package com.kraigochieng.embroideryis.server.services;
 
-import com.kraigochieng.embroideryis.server.dtos.Identifiers;
-import com.kraigochieng.embroideryis.server.dtos.ItemCreation;
+import com.kraigochieng.embroideryis.server.dtos.*;
 import com.kraigochieng.embroideryis.server.mappers.ItemMapper;
 import com.kraigochieng.embroideryis.server.models.Item;
 import com.kraigochieng.embroideryis.server.repositories.ItemRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class ItemServiceImpl implements ItemService {
     @Autowired
     ItemRepository itemRepository;
 
+    @Autowired
+    ItemMapper itemMapper;
+
     @Override
-    public List<Item> getItems() {
-        return itemRepository.findAll();
+    public List<ItemSummary> getItems() {
+        return itemRepository.findAll().stream()
+                .map(itemMapper::itemToItemSummary)
+                .toList();
     }
+
     @Override
-    public Item addItem(ItemCreation itemCreation) {
-        Item item = ItemMapper.INSTANCE.itemCreationToItem(itemCreation);
-        return itemRepository.save(item);
+    public ItemSummary addItem(ItemRequest itemRequest) {
+        Item item = itemMapper.itemCreationToItem(itemRequest);
+        return itemMapper.itemToItemSummary(itemRepository.save(item));
     }
 
     @Transactional
-    public Item editItem(Item editedItem, Long id) {
+    public ItemSummary editItem(ItemRequest itemRequest, UUID id) {
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalStateException("Item not found during edit"));
-        if(item.getName() != editedItem.getName() && editedItem.getName().length() > 0) {
-            item.setName(editedItem.getName());
+        if(!Objects.equals(item.getName(), itemRequest.getName())) {
+            item.setName(itemRequest.getName());
         }
 
-        return item;
+        return itemMapper.itemToItemSummary(item);
     }
 
     @Override
-    public void removeItem(Long id) {
+    public void removeItem(UUID id) {
+        System.out.println(id);
         itemRepository.deleteById(id);
     }
 
     @Override
-    public void removeItems(Identifiers<Long> itemIds) {
+    public void removeItems(Identifiers<UUID> itemIds) {
         itemRepository.deleteAllById(itemIds.getIds());
     }
 }

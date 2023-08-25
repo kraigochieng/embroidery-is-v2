@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { server } from '../axiosInstances'
+import { admin } from '../axiosInstances'
 export default function UserPage() {
 
   const [users, setUsers] = useState([])
@@ -8,7 +8,7 @@ export default function UserPage() {
   const roleDialog = useRef(null)
   const editUserDialog = useRef(null)
 
-  const [user, setUser] = useState({
+  const [userEntity, setUser] = useState({
     id: "",
     firstName: "",
     lastName: "",
@@ -24,14 +24,14 @@ export default function UserPage() {
   })
 
   useEffect(() => {
-      server.get("admin/users/get")
+      admin.get("users/get")
         .then(response => {
           setUsers([...response.data])
           console.log(response.data)
         })
         .catch(error => console.error(error))
 
-      server.get("admin/roles/get")
+      admin.get("roles/get")
         .then(response => {
           setRoles([...response.data])
         })
@@ -52,18 +52,18 @@ export default function UserPage() {
       ...prevUser,
       roles: checked ? [...prevUser.roles, value] : prevUser.roles.filter(role => role.id !== value)
     }))
-    console.log(user.roles)
+    console.log(userEntity.roles)
   }
 
-  function handleEdit(user) {
-    setUser({...user})
+  function handleEdit(userEntity) {
+    setUser({...userEntity})
     editUserDialog.current.showModal()
   }
 
   function handleDelete(id) {
-    server.delete(`admin/users/${id}`)
+    admin.delete(`users/${id}`)
       .then(response => {
-        setUsers(prevUsers => prevUsers.filter(user => user.id !== id))
+        setUsers(prevUsers => prevUsers.filter(userEntity => userEntity.id !== id))
       })
       .catch(error => console.error(error))
   }
@@ -73,9 +73,9 @@ export default function UserPage() {
     return `${date} ${time.substring(0,8)}`
   }
 
-  function seeRoles(user) {
-    console.log(user)
-    setUser({...user})
+  function seeRoles(userEntity) {
+    console.log(userEntity)
+    setUser({...userEntity})
     roleDialog.current.showModal()
   }
 
@@ -83,24 +83,24 @@ export default function UserPage() {
     <>
       <dialog id="role-dialog" ref={roleDialog}>
         {
-          user.roles.length > 0 ?
+          userEntity.roles.length > 0 ?
           <div>
             <h3>Roles</h3>
-            {user.roles.map(role => <p key={role.id}>{role.name}</p>)}
+            {userEntity.roles.map(role => <p key={role.id}>{role.name}</p>)}
           </div> :
-          <p>No roles assigned to user</p>
+          <p>No roles assigned to userEntity</p>
         }
-        <button onClick={() => roleDialog.current.close()}>Close</button>
+        <button onMouseUp={() => roleDialog.current.close()}>Close</button>
       </dialog>
 
       <dialog ref={editUserDialog}>
         <form>
           <label htmlFor="first-name">First Name</label>
-          <input id="first-name" type="text" placeholder="First Name" name="firstName" value={user.firstName} onChange={handleEditUserChange}/>
+          <input id="first-name" type="text" placeholder="First Name" name="firstName" value={userEntity.firstName} onChange={handleEditUserChange}/>
           <label htmlFor="last-name">Last Name</label>
-          <input id="last-name" type="text" placeholder="Last Name" name="lastName" value={user.lastName} onChange={handleEditUserChange}/>
+          <input id="last-name" type="text" placeholder="Last Name" name="lastName" value={userEntity.lastName} onChange={handleEditUserChange}/>
           <label htmlFor="username">Username</label>
-          <input id="username" type="text" placeholder="Username" name="username" value={user.username} onChange={handleEditUserChange}/>
+          <input id="username" type="text" placeholder="Username" name="username" value={userEntity.username} onChange={handleEditUserChange}/>
           <fieldset>
             <legend>Roles</legend>
             {roles.map(role => (
@@ -130,18 +130,18 @@ export default function UserPage() {
 
         <tbody>
           {
-              users.map(user => (
-                <tr key={user.id}>
-                  <td>{user.firstName}</td>
-                  <td>{user.lastName}</td>
-                  <td>{user.username}</td>
-                  <td><button onClick={() => seeRoles(user)}>See Roles</button></td>
-                  <td>{!user.accountNonExpired ? "True" : "False" }</td>
-                  <td>{!user.accountNonLocked ? "True" : "False"}</td>
-                  <td>{timeFormatter(user.createdAt)}</td>
-                  <td>{user.updatedAt ? timeFormatter(user.updatedAt) : "Never Updated"}</td>
-                  <td><button onClick={() => handleEdit(user)}>Edit</button></td>
-                  <td><button onClick={() => handleDelete(id)}>Delete</button></td>
+              users.map(userEntity => (
+                <tr key={userEntity.id}>
+                  <td>{userEntity.firstName}</td>
+                  <td>{userEntity.lastName}</td>
+                  <td>{userEntity.username}</td>
+                  <td><button onMouseUp={() => seeRoles(userEntity)}>See Roles</button></td>
+                  <td>{!userEntity.accountNonExpired ? "True" : "False" }</td>
+                  <td>{!userEntity.accountNonLocked ? "True" : "False"}</td>
+                  <td>{timeFormatter(userEntity.createdAt)}</td>
+                  <td>{userEntity.updatedAt ? timeFormatter(userEntity.updatedAt) : "Never Updated"}</td>
+                  <td><button onMouseUp={() => handleEdit(userEntity)}>Edit</button></td>
+                  <td><button onMouseUp={() => handleDelete(id)}>Delete</button></td>
                 </tr>
             )) 
           }

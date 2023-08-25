@@ -1,6 +1,6 @@
 package com.kraigochieng.embroideryis.server.controllers;
 
-import com.kraigochieng.embroideryis.server.dtos.ColourCreation;
+import com.kraigochieng.embroideryis.server.dtos.ColourRequest;
 import com.kraigochieng.embroideryis.server.dtos.Identifiers;
 import com.kraigochieng.embroideryis.server.models.Colour;
 import com.kraigochieng.embroideryis.server.services.ColourServiceImpl;
@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/admin/colours")
@@ -21,42 +22,42 @@ public class ColourController {
     @Autowired
     ColourServiceImpl colourServiceImpl;
 
-    @GetMapping(path = "get")
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    @PreAuthorize("hasAuthority('SCOPE_READ_COLOUR')")
     public ResponseEntity<List<Colour>> getColours() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(colourServiceImpl.getColours());
     }
 
-    @PostMapping(path = "post")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Colour> addColour(@RequestBody ColourCreation colourCreation) {
+    @PostMapping
+    @PreAuthorize("hasAuthority('SCOPE_CREATE_COLOUR')")
+    public ResponseEntity<Colour> addColour(@RequestBody ColourRequest colourRequest) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(colourServiceImpl.addColour(colourCreation));
+                .body(colourServiceImpl.addColour(colourRequest));
     }
 
-    @PutMapping(path = "put/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Colour> editColour(@RequestBody Colour editedColour, @PathVariable Long id) {
+    @PutMapping(path = "{id}")
+    @PreAuthorize("hasAuthority('SCOPE_UPDATE_COLOUR')")
+    public ResponseEntity<Colour> editColour(@RequestBody ColourRequest colourRequest, @PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(colourServiceImpl.editColour(editedColour, id));
+                .body(colourServiceImpl.editColour(colourRequest, id));
     }
 
-    @DeleteMapping(path = "delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> removeColour(@PathVariable Long id) {
+    @DeleteMapping(path = "{id}")
+    @PreAuthorize("hasAuthority('SCOPE_DELETE_COLOUR')")
+    public ResponseEntity<Void> removeColour(@PathVariable UUID id) {
         colourServiceImpl.removeColour(id);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 
-    @DeleteMapping(path = "delete/list")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> removeColours(@RequestBody Identifiers<Long> colourIds) {
+    @DeleteMapping
+    @PreAuthorize("hasAuthority('SCOPE_DELETE_COLOUR')")
+    public ResponseEntity<Void> removeColours(@RequestBody Identifiers<UUID> colourIds) {
         colourServiceImpl.removeColours(colourIds);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
