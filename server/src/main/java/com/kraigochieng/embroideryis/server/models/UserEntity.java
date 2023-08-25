@@ -3,7 +3,6 @@ package com.kraigochieng.embroideryis.server.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @Table(name = "user")
 @Entity(name = "User")
 @JsonIgnoreProperties({"password"})
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
     @Id
     @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
@@ -43,13 +42,7 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @JsonIgnoreProperties("users")
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
+    @Enumerated(EnumType.STRING)
     private List<Role> roles;
 
     @PrePersist
@@ -65,7 +58,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
     }
 
@@ -159,8 +152,8 @@ public class User implements UserDetails {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof User)) return false;
-        final User other = (User) o;
+        if (!(o instanceof UserEntity)) return false;
+        final UserEntity other = (UserEntity) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$id = this.getId();
         final Object other$id = other.getId();
@@ -190,7 +183,7 @@ public class User implements UserDetails {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof User;
+        return other instanceof UserEntity;
     }
 
     public int hashCode() {

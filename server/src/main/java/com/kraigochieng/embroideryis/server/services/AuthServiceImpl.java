@@ -2,11 +2,11 @@ package com.kraigochieng.embroideryis.server.services;
 
 import com.kraigochieng.embroideryis.server.authentication.LoginRequest;
 import com.kraigochieng.embroideryis.server.authentication.RegisterRequest;
+import com.kraigochieng.embroideryis.server.mappers.UserMapper;
 import com.kraigochieng.embroideryis.server.models.User;
 import com.kraigochieng.embroideryis.server.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,28 +36,26 @@ public class AuthenticationServiceImpl {
     UserDetailsService userDetailsService;
 
     public String login(LoginRequest loginRequest) {
+        // Get user details
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        // Get token
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, loginRequest.getPassword(),userDetails.getAuthorities());
+        // Authenticate using up token
         authenticationManager.authenticate(authenticationToken);
-        String token = jwtServiceImpl.generateToken(authenticationToken);
-        return token;
+        // Return JWT Token
+        return jwtServiceImpl.generateToken(authenticationToken);
     }
 
     public String register(RegisterRequest registerRequest) {
+
         // Make user
-        User user = new User();
-        user.setFirstName(registerRequest.getFirstName());
-        user.setLastName(registerRequest.getLastName());
-        user.setUsername(registerRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setRoles(registerRequest.getRoles());
+        User user = UserMapper.INSTANCE.registerRequestToUser(registerRequest, passwordEncoder.encode(registerRequest.getPassword()));
 
         // Save user
         userRepository.save(user);
         // Generate token
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(registerRequest.getUsername(), registerRequest.getPassword());
-        String token = jwtServiceImpl.generateToken(authenticationToken);
         // Return token
-        return token;
+        return jwtServiceImpl.generateToken(authenticationToken);
     }
 }
