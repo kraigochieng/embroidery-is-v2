@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { server } from "../../axiosInstances";
+import { admin } from "../../axiosInstances";
 import { useNavigate } from "react-router-dom";
 
 const initialState = {
@@ -10,22 +10,22 @@ const initialState = {
 
 
 export const getUsers = createAsyncThunk("users/getUsers", async () => {
-    let response = await server.get("admin/users/get")
+    let response = await admin.get("users/get")
     return response.data
 })
 
 export const putUser = createAsyncThunk("users/putUser", async (userForm) => {
-    let response = await server.put(`admin/users/put/${userForm.id}`, userForm)
+    let response = await admin.put(`users/put/${userForm.id}`, userForm)
     return response.data
 })
 
 export const postUser = createAsyncThunk("users/postUser", async (userForm) => {
-    let response = await server.post("admin/users/post", userForm)
+    let response = await admin.post("users/post", userForm)
     return response.data
 })
 
 export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
-    await server.delete(`admin/users/delete/${id}`)
+    await admin.delete(`users/delete/${id}`)
     return id
 })
 
