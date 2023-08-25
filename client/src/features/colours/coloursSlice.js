@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { server } from "../../axiosInstances";
+import { admin } from "../../axiosInstances";
 
 const initialState = {
     loading: false,
@@ -8,27 +8,27 @@ const initialState = {
 }
 
 export const getColours = createAsyncThunk("colours/getColours", async () => {
-    let response = await server.get("admin/colours/get")
+    let response = await admin.get("colours")
     return response.data
 })
 
-export const putColour = createAsyncThunk("colours/putColour", async (colour) => {
-    let response = await server.put(`admin/colours/put/${colour.id}`, colour)
+export const putColour = createAsyncThunk("colours/putColour", async ({id, colour}) => {
+    let response = await admin.put(`colours/${id}`, colour)
     return response.data    
 })
 
 export const postColour = createAsyncThunk("colours/postColour", async (colour) => {
-    let response = await server.post("admin/colours/post", colour)
+    let response = await admin.post("colours", colour)
     return response.data
 })
 
 export const deleteColour = createAsyncThunk("colours/deleteColour", async (id) => {
-    let response = await server.delete(`admin/colours/delete/${id}`)
+    let response = await admin.delete(`colours/${id}`)
     return id
 })
 
 export const deleteColours = createAsyncThunk("colours/deleteColours", async (colourIds) => {
-    let response = await server.delete("admin/colours/delete/list", {
+    let response = await admin.delete("colours", {
         data: {
             ids: colourIds
         }
