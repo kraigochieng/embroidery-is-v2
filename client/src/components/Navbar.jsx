@@ -19,12 +19,12 @@ export default function Navbar() {
   // Level 3
   const itemsMenuItem = menuItem(<Link to="/admin/store/items">Items</Link>, 'items', null)
   const coloursMenuItem = menuItem(<Link to="/admin/store/colours">Colours</Link>, 'colours', null)
-  const positionsMenuItem = menuItem(<Link to="/admin/store/positions">Positions</Link>, 'positions', null)
+  // const positionsMenuItem = menuItem(<Link to="/admin/store/positions">Positions</Link>, 'positions', null)
 
   // Level 2
   const storeMenuItem = menuItem('Store', 'store', [
     itemsMenuItem,
-    positionsMenuItem,
+    // positionsMenuItem,
     coloursMenuItem
   ])
 
@@ -42,7 +42,7 @@ export default function Navbar() {
           mode='horizontal'
           items={menuItems}
         />
-        <Button onClick={handleLogOut}>Log Out</Button>
+        <Button onMouseUp={handleLogOut}>Log Out</Button>
       </Space>
       <Outlet />
     </>
