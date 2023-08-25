@@ -6,11 +6,12 @@ import { deleteColour, deleteColours, getColours, postColour, putColour } from '
 // Redux
 import { useDispatch, useSelector } from 'react-redux'
 // Ant Design
-import { Form, Space, Input, Table, Modal, Button, message, Popconfirm, Spin } from 'antd'
+import { Form, Space, Input, Table, Modal, Button, message, Popconfirm, Spin, Tooltip } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons'
 // Utilities
 import column from '../utils/column'
 import messageTemplate from '../utils/messageTemplate'
+import Icon from '@ant-design/icons/lib/components/Icon'
 
 export default function ColourPage() {
     // State
@@ -67,8 +68,8 @@ export default function ColourPage() {
 
     function handlEditColourFinish(values) {
         const body = {
-            id: colourToEditId, // Add the ID
-            ...values, // Add the other values
+            id: colourToEditId,
+            colour: values
         }
         dispatch(putColour(body))
         setIsEditColourModalOpen(false) // Close Modal
@@ -101,23 +102,28 @@ export default function ColourPage() {
 
     // Creating actions column for edit, delete buttons
     const actionsColumn = {
-        title: 'Actions',
+        title: '',
         key: 'actions',
         render: (text, record) => {
             return (
                 <>
                     <Space>
-                        <Button icon={<EditOutlined />} onClick={() => handleEditColour(record)}>Edit</Button>
+                        <Tooltip title="Edit" placement='top'>
+                            <Button onMouseUp={() => handleEditColour(record)} icon={<EditOutlined />} />
+                        </Tooltip>
+                        <Tooltip title="Delete" placement='top'>
                         <Popconfirm
-                            title='Delete Colour'
+                            title={`Delete Colour ${record.name}`}
                             description='Are you sure?'
                             onConfirm={(event) => handleDeleteColour(event, record.id)}
                             onCancel={null}
                             okText='Yes'
                             cancelText='No'
+                            placement='bottom'
                         >
-                            <Button danger icon={<DeleteOutlined />}>Delete</Button>
+                            <Button danger icon={<DeleteOutlined />} />       
                         </Popconfirm>
+                        </Tooltip>
                     </Space>
                 </>
             )
@@ -146,17 +152,17 @@ export default function ColourPage() {
     }
     
     return (
-        <div className="page">
+        <>
             {contextHolder}
             {/* Button: Add Colour */}
-            <Button icon={<PlusOutlined />} onClick={handleAddColourModalOpen}>Add Colour</Button>
+            <Button icon={<PlusOutlined />} onMouseUp={handleAddColourModalOpen}>Add Colour</Button>
             {/* Modal: Add Colour */}
             <Modal
                 title='Add Colour'
                 open={isAddColourModalOpen}
                 onCancel={handleAddColourModalCancel}
                 footer={[
-                    <Button key='cancel' onClick={handleAddColourModalCancel}>Cancel</Button>
+                    <Button key='cancel' onMouseUp={handleAddColourModalCancel}>Cancel</Button>
                 ]}
             >
                 {/* Form: Add Colour*/}
@@ -197,6 +203,7 @@ export default function ColourPage() {
                     } 
                     dataSource={colours.data}
                     columns={colourTableColumns} 
+                    size='small'
                 />
             }
             {/* Modal: Edit Colours */}
@@ -205,7 +212,7 @@ export default function ColourPage() {
                 open={isEditColourModalOpen}
                 onCancel={handleEditColourModalCancel}
                 footer={[
-                    <Button key='cancel' onClick={handleEditColourModalCancel}>Cancel</Button>
+                    <Button key='cancel' onMouseUp={handleEditColourModalCancel}>Cancel</Button>
                 ]}
             >  
                 {/* Form: Edit Colour */}
@@ -218,6 +225,6 @@ export default function ColourPage() {
                     </Space.Compact>
                 </Form>
             </Modal>
-        </div>
+        </>
     )
 }

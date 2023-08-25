@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { server } from '../axiosInstances'
+import { admin } from '../axiosInstances'
 import { deleteUser, getUsers, postUser } from '../features/users/usersSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRoles } from '../features/roles/rolesSlice'
@@ -66,7 +66,7 @@ export default function UserPage() {
 
   function handlePostUser() {
     setMethod("POST")
-    // Set the normal user details first
+    // Set the normal userEntity details first
     setUserFormData({
       id: "",
       firstName: "",
@@ -91,25 +91,25 @@ export default function UserPage() {
     userDialog.current.showModal()
   }
 
-  function handleEditUser(user) {
+  function handleEditUser(userEntity) {
     setMethod("PUT")
 
     const newFormDataWithoutRoles = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      enabled: user.enabled,
-      accountNonExpired: user.accountNonExpired,
-      accountNonLocked: user.accountNonLocked,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      credentialsNonExpired: user.credentialsNonExpired
+      id: userEntity.id,
+      firstName: userEntity.firstName,
+      lastName: userEntity.lastName,
+      username: userEntity.username,
+      enabled: userEntity.enabled,
+      accountNonExpired: userEntity.accountNonExpired,
+      accountNonLocked: userEntity.accountNonLocked,
+      createdAt: userEntity.createdAt,
+      updatedAt: userEntity.updatedAt,
+      credentialsNonExpired: userEntity.credentialsNonExpired
     }
 
-    // Set user form data without the roles array, maintain the roles boolean
+    // Set userEntity form data without the roles array, maintain the roles boolean
     setUserFormData({
-      ...newFormDataWithoutRoles, // Put this to put the new user details overwriting the previous ones
+      ...newFormDataWithoutRoles, // Put this to put the new userEntity details overwriting the previous ones
     })
 
     // Reset all roles to false
@@ -121,20 +121,20 @@ export default function UserPage() {
     })
 
     // Set the roles found to true...
-    user.roles.map(role => {
+    userEntity.roles.map(role => {
       setUserFormData(prevUserFormData => ({
         ...prevUserFormData,
         [role.name]: true
       }))
     })
-    // for(let i = 0; i < user.roles.length; i++) {
+    // for(let i = 0; i < userEntity.roles.length; i++) {
     //   setUserFormData(prevUserFormData => ({
     //     ...prevUserFormData,
-    //     [user.roles[i].name]: true
+    //     [userEntity.roles[i].name]: true
     //   }))
     // }
 
-    console.log(user.roles)
+    console.log(userEntity.roles)
     userDialog.current.showModal()
   }
 
@@ -157,8 +157,8 @@ export default function UserPage() {
     return `${date} ${time.substring(0,8)}`
   }
 
-  function seeRoles(user) {
-    setUserFormData({...user})
+  function seeRoles(userEntity) {
+    setUserFormData({...userEntity})
     roleDialog.current.showModal()
   }
 
@@ -171,9 +171,9 @@ export default function UserPage() {
             <h3>Roles</h3>
             {userFormData.roles.map(role => <p key={role.id}>{role.name}</p>)}
           </div> :
-          <p>No roles assigned to user</p>
+          <p>No roles assigned to userEntity</p>
         }
-        <button onClick={() => roleDialog.current.close()}>Close</button>
+        <button onMouseUp={() => roleDialog.current.close()}>Close</button>
       </dialog> */}
 
       <dialog ref={userDialog}>
@@ -191,7 +191,7 @@ export default function UserPage() {
             <input id="username" type="text" placeholder="Username" name="username" value={userFormData.username} onChange={handleUserFormChange}/>
           </div>
           {
-            // Only show password field wen posting a user
+            // Only show password field wen posting a userEntity
             method === "POST" &&
             <div>
             <label htmlFor="password">Password</label>
@@ -215,7 +215,7 @@ export default function UserPage() {
         </form>
       </dialog>
 
-      <button type="button" onClick={handlePostUser}>Add User</button>
+      <button type="button" onMouseUp={handlePostUser}>Add User</button>
       {
         users.loading ?
         <p>Loading...</p> :
@@ -235,18 +235,18 @@ export default function UserPage() {
 
         <tbody>
           {
-              users.data.map(user => (
-                <tr key={user.id}>
-                  <td>{user.firstName}</td>
-                  <td>{user.lastName}</td>
-                  <td>{user.username}</td>
-                  <td><button onClick={() => seeRoles(user)}>See Roles</button></td>
-                  <td>{!user.accountNonExpired ? "True" : "False" }</td>
-                  <td>{!user.accountNonLocked ? "True" : "False"}</td>
-                  <td>{timeFormatter(user.createdAt)}</td>
-                  <td>{user.updatedAt ? timeFormatter(user.updatedAt) : "Never Updated"}</td>
-                  <td><button onClick={() => handleEditUser(user)}>Edit</button></td>
-                  <td><button onClick={() => handleDeleteUser(user.id)}>Delete</button></td>
+              users.data.map(userEntity => (
+                <tr key={userEntity.id}>
+                  <td>{userEntity.firstName}</td>
+                  <td>{userEntity.lastName}</td>
+                  <td>{userEntity.username}</td>
+                  <td><button onMouseUp={() => seeRoles(userEntity)}>See Roles</button></td>
+                  <td>{!userEntity.accountNonExpired ? "True" : "False" }</td>
+                  <td>{!userEntity.accountNonLocked ? "True" : "False"}</td>
+                  <td>{timeFormatter(userEntity.createdAt)}</td>
+                  <td>{userEntity.updatedAt ? timeFormatter(userEntity.updatedAt) : "Never Updated"}</td>
+                  <td><button onMouseUp={() => handleEditUser(userEntity)}>Edit</button></td>
+                  <td><button onMouseUp={() => handleDeleteUser(userEntity.id)}>Delete</button></td>
                 </tr>
             )) 
           }

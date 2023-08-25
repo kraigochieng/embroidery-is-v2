@@ -1,11 +1,14 @@
 // React
-import React, {  useEffect, useRef, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
+// React Router
+import { Link } from 'react-router-dom'
 // Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { putItem, deleteItem, postItem, getItems, deleteItems } from '../features/items/itemsSlice'
 // Ant Design
-import { Form, Input, Table, Space, Button, Popconfirm, Modal, message } from 'antd'
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { Form, Input, Table, Space, Button, Popconfirm, Modal, message, Tooltip } from 'antd'
+import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined } from '@ant-design/icons'
+
 // Utitlies
 import column from '../utils/column'
 import messageTemplate from '../utils/messageTemplate'
@@ -67,7 +70,7 @@ export default function ItemPage() {
     function handleEditItemFinish(values) {
         const body = {
             id: itemToEditId,
-            ...values // get other values
+            item: values // get other values
         }
         dispatch(putItem(body)) // actual async response
         setIsEditItemModalOpen(false)// Close Modal
@@ -79,27 +82,30 @@ export default function ItemPage() {
     /// Column Definitions
     const nameColumn = column('Name', 'name', 'name')
     nameColumn['sorter'] = (a,b) => a.name.localeCompare(b.name)
-
+    nameColumn['render'] = (text, record) => <Link to={`/admin/store/items/${record.id}/positions`} state={record}>{text}</Link>
     const actionsColumn = {
-        title: 'Actions',
+        title: '',
         key: 'actions',
         render: (text, record) => {
             return (
-                <>
-                    <Space>
-                        <Button icon={<EditOutlined />} onClick={() => handleEditItem(record)}>Edit</Button>
+                <Space>
+                    <Tooltip title='Edit' placement='top'>
+                        <Button  onMouseUp={() => handleEditItem(record)} icon={<EditOutlined />} />
+                    </Tooltip>
+                    <Tooltip title="Delete" placement='top'>
                         <Popconfirm
-                            title='Delete Item'
+                            title={`Delete Item ${record.name}`}
                             description='Are you sure?'
                             onConfirm={(event) => handleDeleteItem(event, record.id)}
                             onCancel={null}
                             okText='Yes'
                             cancelText='No'
+                            placement='bottom'
                         >
-                            <Button danger icon={<DeleteOutlined />}>Delete</Button>
+                            <Button danger icon={<DeleteOutlined />} />
                         </Popconfirm>
-                    </Space>
-                </>
+                    </Tooltip>  
+                </Space>
             )
         }
     }
@@ -134,21 +140,24 @@ export default function ItemPage() {
 
     // Handling Delete
     function handleDeleteItems(event) {
-        dispatch(deleteItems(selectedRowKeys)) // Delete Colours
+        const itemsIdsObject = {
+            ids: selectedRowKeys
+        }
+        dispatch(deleteItems(itemsIdsObject)) // Delete Colours
         deleteItemSuccess() // Show Message
         setSelectedRowKeys([]) // clear the array since it doesn't clear itself
     }
     return (
-    <div className="page">
+    <>
         {contextHolder}
-        <Button icon={<PlusOutlined />} onClick={handleAddItemModalOpen}>Add Item</Button>
+        <Button icon={<PlusOutlined />} onMouseUp={handleAddItemModalOpen}>Add Item</Button>
         {/* Modal: Add Item */}
         <Modal
             title='Add Item'
             open={isAddItemModalOpen}
             onCancel={handleAddItemModalCancel}
             footer={[
-                <Button key='cancel' onClick={handleAddItemModalCancel}>Cancel</Button>
+                <Button key='cancel' onMouseUp={handleAddItemModalCancel}>Cancel</Button>
             ]}
         >
             {/* Form: Add Item */}
@@ -167,7 +176,7 @@ export default function ItemPage() {
             <Popconfirm
                 title='Delete Items(s)'
                 description='Are you sure?'
-                onConfirm={handleDeleteItems}
+                onConfirm={(event) => handleDeleteItems(event)}
                 onCancel={null}
                 okText='Yes'
                 cancelText='No'
@@ -175,22 +184,30 @@ export default function ItemPage() {
                 <Button icon={<DeleteOutlined />}>Delete Many</Button>
             </Popconfirm>
         }
-        <Table
-            rowKey={(record) => record.id}
-            rowSelection={{
-                type: 'checkbox',
-                ...rowSelection
-            }}
-            columns={itemTableColumns}
-            dataSource={items.data}
-        />
+         {
+            items.loading ?
+            <Space direction='vertical' style={{display: 'block'}} >
+                <LoadingOutlined/>
+                <p>Loading...</p>
+            </Space> :
+            <Table
+                rowKey={(record) => record.id}
+                rowSelection={{
+                    type: 'checkbox',
+                    ...rowSelection
+                }}
+                columns={itemTableColumns}
+                dataSource={items.data}
+                size='small'
+            />
+        }
         {/* Modal: Edit Item */}
         <Modal
             title='Edit Item'
             open={isEditItemModalOpen}
             onCancel={handleEditItemModalCancel}
             footer={[
-                <Button key='cancel' onClick={handleEditItemModalCancel}>Cancel</Button>
+                <Button key='cancel' onMouseUp={handleEditItemModalCancel}>Cancel</Button>
             ]}
         >
             {/* Form: Edit Item */}
@@ -203,6 +220,6 @@ export default function ItemPage() {
                 </Space.Compact>
             </Form>
         </Modal>
-    </div>
+    </>
     )
 }

@@ -8,7 +8,7 @@ export default function AuthPage() {
     const [isUserValid, setIsUserValid] = useState(true)
     // Form Config
     loginForm.setFieldsValue({
-        username: 'kraig18',
+        username: 'kraig',
         password: 'password'
     })
 
@@ -19,10 +19,9 @@ export default function AuthPage() {
     function handleFinish(values) {
         auth.post('login', values)
             .then(response => {
-                // set JWT token
-                sessionStorage.setItem("jwt", response.data)
-                // Navigate to home page
-                navigate("/")
+                sessionStorage.setItem("jwt", response.data.token) // Set JWT Token
+                sessionStorage.setItem("authorities", JSON.stringify(response.data.authorities))
+                navigate("/") // Navigate to home page
             })
             .catch(error => {
                 setIsUserValid(false)
