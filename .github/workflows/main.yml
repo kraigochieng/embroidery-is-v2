@@ -33,12 +33,13 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           # relative path to the place where source code with Dockerfile is located
-          context: ./client
+          context: ../client
           # Note: tags has to be all lower-case
           tags: |
             kraigochieng/embroidery-is-v2-client:latest
           # build on feature branches, push only on main branch
           push: true
+          
       # - name: Build and push server
       #   working-directory: server
       #   run: |
