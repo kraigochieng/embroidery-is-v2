@@ -11,6 +11,6 @@ jobs:
     steps:
       - name: Build and push client
         run: |
-          docker build -t kraigochieng/embroidery-is-v2-client:latest --file ./client/Dockerfile .
+          docker build --file ./client/Dockerfile -t kraigochieng/embroidery-is-v2-client:latest ./client/Dockerfile .
           docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
           docker push kraigochieng/embroidery-is-v2-client:latest
