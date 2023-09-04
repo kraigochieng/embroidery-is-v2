@@ -9,6 +9,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Build and push client
         run: |
           docker build --file ./client/Dockerfile -t kraigochieng/embroidery-is-v2-client:latest .
