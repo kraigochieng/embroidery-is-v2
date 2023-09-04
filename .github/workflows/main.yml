@@ -21,24 +21,24 @@ jobs:
 
 
       
-      # - name: Build and push client
-      #   # working-directory: client
-      #   run: |
-      #     docker build -t kraigochieng/embroidery-is-v2-client:latest .
-      #     docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
-      #     docker push kraigochieng/embroidery-is-v2-client:latest
+      - name: Build and push client
+        working-directory: ../client
+        run: |
+          docker build -t kraigochieng/embroidery-is-v2-client:latest .
+          docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+          docker push kraigochieng/embroidery-is-v2-client:latest
 
 
-      - name: Build image and push to Docker Hub and GitHub Container Registry
-        uses: docker/build-push-action@v4
-        with:
-          # relative path to the place where source code with Dockerfile is located
-          context: ../client
-          # Note: tags has to be all lower-case
-          tags: |
-            kraigochieng/embroidery-is-v2-client:latest
-          # build on feature branches, push only on main branch
-          push: true
+      # - name: Build image and push to Docker Hub and GitHub Container Registry
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     # relative path to the place where source code with Dockerfile is located
+      #     context: ../client
+      #     # Note: tags has to be all lower-case
+      #     tags: |
+      #       kraigochieng/embroidery-is-v2-client:latest
+      #     # build on feature branches, push only on main branch
+      #     push: true
           
       # - name: Build and push server
       #   working-directory: server
