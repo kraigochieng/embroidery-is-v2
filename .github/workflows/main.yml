@@ -18,12 +18,12 @@ jobs:
       #   with:
       #     username: ${{ secrets.DOCKERHUB_USERNAME }}
       #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          
+      - name: try out ls
+        run: |
+          ls
       - name: Build and push client
         # working-directory: client
         run: |
-          ls
-          cd client
           docker build -t kraigochieng/embroidery-is-v2-client:latest .
           docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
           docker push kraigochieng/embroidery-is-v2-client:latest
