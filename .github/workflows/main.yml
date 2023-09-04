@@ -22,7 +22,7 @@ jobs:
       - name: Build and push client
         # working-directory: client
         run: |
-          docker build -t kraigochieng/embroidery-is-v2-client:latest .
+          docker build -t kraigochieng/embroidery-is-v2-client:latest -f client .
           docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
           docker push kraigochieng/embroidery-is-v2-client:latest
 
