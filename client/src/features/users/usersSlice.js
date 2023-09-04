@@ -10,22 +10,22 @@ const initialState = {
 
 
 export const getUsers = createAsyncThunk("users/getUsers", async () => {
-    let response = await admin.get("users/get")
+    let response = await admin.get("users")
     return response.data
 })
 
 export const putUser = createAsyncThunk("users/putUser", async (userForm) => {
-    let response = await admin.put(`users/put/${userForm.id}`, userForm)
+    let response = await admin.put(`users/${userForm.id}`, userForm)
     return response.data
 })
 
 export const postUser = createAsyncThunk("users/postUser", async (userForm) => {
-    let response = await admin.post("users/post", userForm)
+    let response = await admin.post("users", userForm)
     return response.data
 })
 
 export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
-    await admin.delete(`users/delete/${id}`)
+    await admin.delete(`users/${id}`)
     return id
 })
 

@@ -1,6 +1,8 @@
 package com.kraigochieng.embroideryis.server.controllers;
 
 import com.kraigochieng.embroideryis.server.dtos.AuthenticationRequest;
+import com.kraigochieng.embroideryis.server.dtos.UserEntityDetails;
+import com.kraigochieng.embroideryis.server.dtos.UserEntitySummary;
 import com.kraigochieng.embroideryis.server.models.UserEntity;
 import com.kraigochieng.embroideryis.server.services.UserEntityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +26,27 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/admin/users")
 @CrossOrigin
-public class UserController {
+public class UserEntityController {
+    private final String urlWithId = "{id}";
+    private final String profilesUrl = "profiles";
     @Autowired
     UserEntityServiceImpl userEntityServiceImpl;
-    @GetMapping(path = "get")
+    @GetMapping
     @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
-    public ResponseEntity<List<UserEntity>> getUsers() {
+    public ResponseEntity<List<UserEntitySummary>> getUsers() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(userEntityServiceImpl.getUsers());
     }
 
-    @PostMapping(path = "post")
+    @GetMapping(path = urlWithId)
+    @PreAuthorize("hasAuthority('SCOPE_READ_USER')")
+    public ResponseEntity<UserEntityDetails> getUserDetails(@PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userEntityServiceImpl.getUserDetails(id));
+    }
+    @PostMapping
     @PreAuthorize("hasAuthority('SCOPE_CREATE_USER')")
     public ResponseEntity<UserEntity> addUser(@RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity
@@ -43,15 +54,15 @@ public class UserController {
                 .body(userEntityServiceImpl.addUser(authenticationRequest));
     }
 
-    @PutMapping(path = "put/{id}")
+    @PutMapping(path = urlWithId)
     @PreAuthorize("hasAuthority('SCOPE_UPDATE_USER')")
-    public ResponseEntity<UserEntity> editUser(@RequestBody UserEntity editedUserEntity, @PathVariable UUID id) {
+    public ResponseEntity<UserEntitySummary> editUser(@RequestBody UserEntityDetails userEntityDetails, @PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userEntityServiceImpl.editUser(editedUserEntity, id));
+                .body(userEntityServiceImpl.editUser(userEntityDetails, id));
     }
 
-    @DeleteMapping(path = "delete/{id}")
+    @DeleteMapping(path = urlWithId)
     @PreAuthorize("hasAuthority('SCOPE_DELETE_USER')")
     public ResponseEntity<Void> removeUser(@PathVariable UUID id) {
         userEntityServiceImpl.removeUser(id);

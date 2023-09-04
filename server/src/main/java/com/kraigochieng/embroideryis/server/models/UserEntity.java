@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,6 +35,18 @@ public class UserEntity implements UserDetails {
 
     @Column(name = "roles")
     private List<Role> roles;
+
+    @Column(name = "is_account_non_expired")
+    private boolean isAccountNonExpired = true;
+
+    @Column(name = "is_account_non_locked")
+    private boolean isAccountNonLocked = true;
+
+    @Column(name = "is_credentials_non_expired")
+    private boolean isCredentialsNonExpired = true;
+
+    @Column(name = "is_enabled")
+    private boolean isEnabled = true;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -62,21 +73,21 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return this.isAccountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.isAccountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return this.isCredentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isEnabled;
     }
 }

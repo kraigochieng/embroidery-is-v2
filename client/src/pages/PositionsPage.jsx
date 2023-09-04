@@ -14,7 +14,7 @@ import messageTemplate from '../utils/messageTemplate'
 
 import { useParams } from 'react-router-dom'
 
-export default function PositionPage() {
+export default function PositionsPage() {
     const [selectedRowKeys, setSelectedRowKeys] = useState([])
     const [positionIdToEdit, setPositionIdToEdit] = useState('')
     const [isAddPositionModalOpen, setIsAddPositionModalOpen] = useState(false) // Add Position Modal

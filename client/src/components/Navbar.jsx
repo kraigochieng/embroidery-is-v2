@@ -19,7 +19,8 @@ export default function Navbar() {
   // Level 3
   const itemsMenuItem = menuItem(<Link to="/admin/store/items">Items</Link>, 'items', null)
   const coloursMenuItem = menuItem(<Link to="/admin/store/colours">Colours</Link>, 'colours', null)
-  // const positionsMenuItem = menuItem(<Link to="/admin/store/positions">Positions</Link>, 'positions', null)
+  
+  const usersMenuItem = menuItem(<Link to="/admin/accounts/users">Users</Link>, 'users', null)
 
   // Level 2
   const storeMenuItem = menuItem('Store', 'store', [
@@ -28,12 +29,17 @@ export default function Navbar() {
     coloursMenuItem
   ])
 
+  const accountsMenuItem = menuItem('Accounts', 'accounts', [
+    usersMenuItem
+  ])
   // Level 1
   const adminMenuItems = menuItem('Admin', 'admin', [
+    accountsMenuItem,
     storeMenuItem
   ])
+
   const menuItems = [
-    adminMenuItems
+    adminMenuItems,
   ]
   return (
     <>

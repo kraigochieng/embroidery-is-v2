@@ -13,7 +13,7 @@ import { EditOutlined, DeleteOutlined, PlusOutlined, LoadingOutlined } from '@an
 import column from '../utils/column'
 import messageTemplate from '../utils/messageTemplate'
 
-export default function ItemPage() {
+export default function ItemsPage() {
     // State
     const [selectedRowKeys, setSelectedRowKeys] = useState([]) //  To maintain the selected rows keys
     const [itemToEditId, setItemToEditId] = useState('')

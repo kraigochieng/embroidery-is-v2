@@ -1,6 +1,8 @@
 package com.kraigochieng.embroideryis.server.services;
 
 import com.kraigochieng.embroideryis.server.dtos.AuthenticationRequest;
+import com.kraigochieng.embroideryis.server.dtos.UserEntityDetails;
+import com.kraigochieng.embroideryis.server.dtos.UserEntitySummary;
 import com.kraigochieng.embroideryis.server.mappers.UserEntityMapper;
 import com.kraigochieng.embroideryis.server.models.UserEntity;
 import com.kraigochieng.embroideryis.server.repositories.UserEntityRepository;
@@ -21,29 +23,42 @@ public class UserEntityServiceImpl implements UserEntityService {
     @Autowired
     UserEntityMapper userEntityMapper;
 
-    public List<UserEntity> getUsers() {
-        return userEntityRepository.findAll();
+    @Override
+    public List<UserEntitySummary> getUsers() {
+        return userEntityRepository.findAll().stream()
+                .map(userEntityMapper::userEntityToUserEntitySummary)
+                .toList();
     }
 
+    @Override
+    public UserEntityDetails getUserDetails(UUID id) {
+        UserEntity userEntity = userEntityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return userEntityMapper.userEntityToUserEntityDetails(userEntity);
+    }
+
+    @Override
     public UserEntity addUser(AuthenticationRequest authenticationRequest) {
         UserEntity userEntity = userEntityMapper.registerRequestToUserEntity(authenticationRequest);
         return userEntityRepository.save(userEntity);
     }
     @Transactional
-    public UserEntity editUser(UserEntity editedUserEntity, UUID id) {
+    @Override
+    public UserEntitySummary editUser(UserEntityDetails userEntityDetails, UUID id) {
         UserEntity userEntity = userEntityRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("User not found when trying to update user"));
         // Set first name
-        if(!Objects.equals(editedUserEntity.getFirstName(), userEntity.getFirstName())) {
-            userEntity.setFirstName(editedUserEntity.getFirstName());
+        if(!Objects.equals(userEntityDetails.getFirstName(), userEntity.getFirstName())) {
+            userEntity.setFirstName(userEntityDetails.getFirstName());
         }
 
-        if(!Objects.equals(editedUserEntity.getLastName(), userEntity.getLastName())) {
-            userEntity.setLastName(editedUserEntity.getLastName());
+        if(!Objects.equals(userEntityDetails.getLastName(), userEntity.getLastName())) {
+            userEntity.setLastName(userEntityDetails.getLastName());
         }
 
-        return userEntity;
+
+        return userEntityMapper.userEntityToUserEntitySummary(userEntity);
     }
 
+    @Override
     public void removeUser(UUID id) {
         userEntityRepository.deleteById(id);
     }

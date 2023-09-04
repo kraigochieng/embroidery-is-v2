@@ -4,7 +4,7 @@ import { deleteUser, getUsers, postUser } from '../features/users/usersSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRoles } from '../features/roles/rolesSlice'
 import { stringify } from 'postcss'
-export default function UserPage() {
+export default function UsersPage() {
   const dispatch = useDispatch()
 
   const users = useSelector(state => state.users)
