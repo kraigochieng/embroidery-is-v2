@@ -20,7 +20,7 @@ jobs:
       #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
           
       - name: Build and push client
-        working-directory: ./client
+        working-directory: client
         run: |
           docker build -t kraigochieng/embroidery-is-v2-client:latest .
           docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
