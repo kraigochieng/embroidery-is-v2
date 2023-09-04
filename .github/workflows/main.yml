@@ -18,16 +18,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          
       - name: Build and push client
-        uses: docker/build-push-action@v4
-        with:
-          context: ./client
-          push: true
-          tags: kraigochieng/embroidery-is-v2-client:latest
+        working-directory: ./client
+        run: |
+          docker build -t kraigochieng/embroidery-is-v2-client:latest .
+          docker push kraigochieng/embroidery-is-v2-client:latest
 
       - name: Build and push server
-        uses: docker/build-push-action@v4
-        with:
-          context: ./server
-          push: true
-          tags: kraigochieng/embroidery-is-v2-server:latest
+        working-directory: ./server
+        run: |
+          docker build -t kraigochieng/embroidery-is-v2-server:latest .
+          docker push kraigochieng/embroidery-is-v2-server:latest
