@@ -1,0 +1,12 @@
+version: "3"
+services:
+  client:
+    build: ./client
+    image: kraigochieng/embroidery-is-v2-client
+  server:
+    build: ./server
+    image: kraigochieng/embroidery-is-v2-server
+  
+        
+  
+

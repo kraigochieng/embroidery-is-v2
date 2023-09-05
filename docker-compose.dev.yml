@@ -1,0 +1,26 @@
+version: "3"
+services:
+  client:
+    build: ./client
+    ports: 
+      - "81:80"
+  server:
+    build: ./server
+    ports:
+      - "8081:8080"
+  database:
+    image: postgres:14-alpine3.18
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER="embroidery-user"
+      - POSTRGES_PASSWORD="embroidery_user"
+networks:
+  embroidery-is-v2-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: '1992.168.92.0/24'
+        
+  
+
