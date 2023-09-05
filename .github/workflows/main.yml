@@ -10,8 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build and push client
-        run: |
-          docker build --file ./client/Dockerfile -t kraigochieng/embroidery-is-v2-client:latest .
-          docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
-          docker push kraigochieng/embroidery-is-v2-client:latest
+      # - name: Build and push client
+      #   run: |
+      #     docker build --file ./client/Dockerfile -t kraigochieng/embroidery-is-v2-client:latest .
+      #     docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+      #     docker push kraigochieng/embroidery-is-v2-client:latest
+      - uses: isbang/compose-action@1.5.1
+        with:
+          compose-file: "./docker-compose.yml"
