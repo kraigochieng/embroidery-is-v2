@@ -22,7 +22,7 @@ jobs:
       - name: Build and push client image
         uses: docker/build-push-action@v4.1.1
         with:
-          context: Dockerfile
+          context: client/
           push: true
           tags: kraigochieng/embroidery-is-v2-client:latest
 
