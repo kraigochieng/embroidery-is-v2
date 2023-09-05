@@ -18,4 +18,4 @@ jobs:
         with:
           file: ./client/Dockerfile
           push: true
-          tags: user/app:latest
+          tags: kraigochieng/embroidery-is-v2-client:latest
