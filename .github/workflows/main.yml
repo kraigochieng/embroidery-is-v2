@@ -11,4 +11,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build Images
-        run: docker compose push --file ./docker-compose.yml
+        run: docker compose push
