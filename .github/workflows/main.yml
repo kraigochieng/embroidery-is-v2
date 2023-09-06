@@ -17,7 +17,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven
-        run: mvn -B package -DskipTests --file server/pom.xml
+        run: mvn -B clean package -DskipTests --file server/pom.xml
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
