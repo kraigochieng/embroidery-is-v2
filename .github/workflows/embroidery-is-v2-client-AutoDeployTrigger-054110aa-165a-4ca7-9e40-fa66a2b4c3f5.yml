@@ -2,6 +2,9 @@ name: Trigger auto deployment for embroidery-is-v2-client
 
 # When this action will be executed
 on:
+  workflow_run:
+    workflows: ["build-images.yml"]
+    types: [completed]
   # Automatically trigger it when detected changes in repo
   push:
     branches: 
