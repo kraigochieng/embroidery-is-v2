@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const admin = axios.create({
-    baseURL: "http://localhost:8080/api/admin/",
+    baseURL: import.meta.env.VITE_EMBROIDERY_IS_V2_SERVER_URL + "/admin/",
 })
 
 admin.interceptors.request.use(
@@ -16,5 +16,5 @@ admin.interceptors.request.use(
 
 // This isntance is for authentication. If it has an Authorization header, an error pops up
 export const auth = axios.create({
-    baseURL: "http://localhost:8080/api/auth/"
+    baseURL: import.meta.env.VITE_EMBROIDERY_IS_V2_SERVER_URL + "/auth/"
 })
