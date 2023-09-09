@@ -36,6 +36,7 @@ export default function AuthPage() {
 
     return (
         <>
+           {/* <p>{process.env.PATH}</p>  */}
             <Form form={loginForm} name='loginForm' onFinish={handleFinish}>
                 <Form.Item label='Username' name='username'>
                     <Input placeholder='Username'/>
