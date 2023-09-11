@@ -1,5 +1,5 @@
 import axios from "axios";
-const serverUrl = "https://embroidery-is-v2-server.internal.wittyfield-49acbf62.southafricanorth.azurecontainerapps.io" 
+const serverUrl = "https://embroidery-is-v2-server.wittyfield-49acbf62.southafricanorth.azurecontainerapps.io" 
 export const admin = axios.create({
     baseURL: `${serverUrl}/api/admin/`,
 })
