@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/admin")
-@CrossOrigin
+@CrossOrigin(origins = "${EMBROIDERY_IS_V2-CLIENT_URL}")
 public class PositionController {
     private final String urlWithItems = "items/{itemId}/positions";
     private final String plainUrl = "positions";

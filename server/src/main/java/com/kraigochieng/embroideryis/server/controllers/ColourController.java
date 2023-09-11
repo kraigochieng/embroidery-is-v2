@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/admin/colours")
-@CrossOrigin
+@CrossOrigin(origins = "${EMBROIDERY_IS_V2-CLIENT_URL}")
 @Slf4j
 public class ColourController {
     @Autowired

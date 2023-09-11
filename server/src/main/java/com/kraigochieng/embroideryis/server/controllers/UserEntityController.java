@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/admin/users")
-@CrossOrigin
+@CrossOrigin(origins = "${EMBROIDERY_IS_V2-CLIENT_URL}")
 public class UserEntityController {
     private final String urlWithId = "{id}";
     private final String profilesUrl = "profiles";

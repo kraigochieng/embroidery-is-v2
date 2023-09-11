@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/admin/items")
-@CrossOrigin
+@CrossOrigin(origins = "${EMBROIDERY_IS_V2-CLIENT_URL}")
 public class ItemController {
     @Autowired
     ItemServiceImpl itemServiceImpl;

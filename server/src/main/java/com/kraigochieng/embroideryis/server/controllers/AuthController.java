@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/auth")
-@CrossOrigin
+@CrossOrigin(origins = "${EMBROIDERY_IS_V2-CLIENT_URL}")
 public class AuthController {
 
     @Autowired
