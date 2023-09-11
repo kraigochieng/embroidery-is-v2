@@ -1,7 +1,9 @@
 import axios from "axios";
-const serverUrl = "https://embroidery-is-v2-server.wittyfield-49acbf62.southafricanorth.azurecontainerapps.io" 
+
+const prodServerUrl = "https://embroidery-is-v2-server.wittyfield-49acbf62.southafricanorth.azurecontainerapps.io"
+const devServerUrl = "http://localhost:8080"
 export const admin = axios.create({
-    baseURL: `${serverUrl}/api/admin/`,
+    baseURL: `${prodServerUrl}/api/admin/`,
 })
 
 admin.interceptors.request.use(
@@ -16,5 +18,5 @@ admin.interceptors.request.use(
 
 // This isntance is for authentication. If it has an Authorization header, an error pops up
 export const auth = axios.create({
-    baseURL: `${serverUrl}/api/auth/`
+    baseURL: `${prodServerUrl}/api/auth/`
 })
