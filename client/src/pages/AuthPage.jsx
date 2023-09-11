@@ -25,7 +25,7 @@ export default function AuthPage() {
             })
             .catch(error => {
                 setIsUserValid(false)
-                console.error(error.response.status)
+                console.error(error.message)
             })
     }
 

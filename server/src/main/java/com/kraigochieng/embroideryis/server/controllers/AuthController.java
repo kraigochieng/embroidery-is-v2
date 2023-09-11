@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api/auth")
 @CrossOrigin(origins = "${EMBROIDERY_IS_V2_CLIENT_URL}")
 public class AuthController {
-
     @Autowired
     AuthServiceImpl authServiceImpl;
 
