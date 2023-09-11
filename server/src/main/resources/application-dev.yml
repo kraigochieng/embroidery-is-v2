@@ -1,0 +1,37 @@
+#DataSource settings
+spring:
+  datasource:
+    url: jdbc:postgresql://0.0.0.0:54320/embroidery
+    username: postgres
+    password: shortoot
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+    hibernate:
+      ddl-auto: create-drop
+  # Hibernate settings
+  data:
+    jpa:
+      repositories:
+        enabled: true
+
+
+
+# RSA
+rsa:
+  private-key: certs/private.pem
+  public-key: certs/public.pem
+
+# Logging settings
+logging:
+  level:
+    org.springframework.web: DEBUG
+    com.fasterxml.jackson: DEBUG
+
+# Server port
+server:
+  port: 8080
