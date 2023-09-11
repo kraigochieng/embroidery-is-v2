@@ -1,7 +1,7 @@
 import axios from "axios";
-
+const serverUrl = "https://embroidery-is-v2-server.wittyfield-49acbf62.southafricanorth.azurecontainerapps.io"
 export const admin = axios.create({
-    baseURL: import.meta.env.VITE_EMBROIDERY_IS_V2_SERVER_URL + "/api/admin/",
+    baseURL: `${serverUrl}/api/admin/`,
 })
 
 admin.interceptors.request.use(
@@ -16,5 +16,5 @@ admin.interceptors.request.use(
 
 // This isntance is for authentication. If it has an Authorization header, an error pops up
 export const auth = axios.create({
-    baseURL: import.meta.env.VITE_EMBROIDERY_IS_V2_SERVER_URL + "/api/auth/"
+    baseURL: `${serverUrl}/api/auth/`
 })
