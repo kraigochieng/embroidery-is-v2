@@ -1,4 +1,3 @@
-import React from 'react'
 import {Link, Outlet, useNavigate } from 'react-router-dom'
 import menuItem from '../utils/menuItem'
 import { Button, Menu, Space } from 'antd'
@@ -41,6 +40,7 @@ export default function Navbar() {
   const menuItems = [
     adminMenuItems,
   ]
+  
   return (
     <>
       <Space>

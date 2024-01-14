@@ -1,7 +1,7 @@
 #DataSource settings
 spring:
   profiles:
-      active: prod
+      active: dev
 
 # Server port
 server:

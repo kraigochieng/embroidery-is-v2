@@ -21,5 +21,4 @@ public class Colour {
 
     @Column(name = "name", unique = true)
     private String name;
-
 }
